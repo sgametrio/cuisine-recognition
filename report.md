@@ -1,0 +1,27 @@
+# Machine Learning - progetto
+
+- Plot esplorativi sul dataset
+
+  - Distribuzione ricette per tipo di cucina
+
+    ![Distribuzione ricette per tipo di cucina](./_report-assets/cuisine_distribution_dataset.png)
+
+    Spiegare perchè abbiamo ridotto le ricette italiane, messicane, etc... (perchè) e di quanto
+
+- 10-fold cross validation (controllare varianza per vedere se è un buon modello o meno)
+
+  - Links:
+    - https://www.analyticsvidhya.com/blog/2018/05/improve-model-performance-cross-validation-in-python-r/
+    - http://topepo.github.io/caret/model-training-and-tuning.html
+  - Fare plot e ROC per ogni fold e ogni classe
+
+# Data Technology 
+
+- Descrizione delle modalità di scelta e acquisizione delle sorgenti dati e scelta del modello di descrizione del dataset
+- Analisi di almeno 2 dimensioni di qualità e relative metriche dei dataset analizzati singolarmente
+- Processo di integrazione dei dati ed eventuali problemi riscontrati includendo le eterogenità riscontrate
+- Analisi di almeno 2 dimensioni di qualità e relative metriche delle features successivamente utilizzate
+- Analisi descrittive dei dati integrati (a titolo di esempio nel dominio delle pubblicazioni scientifiche di docenti universitari possibili analisi sono
+  - Numero di pubblicazioni per autore
+  - Numero medio di autori per ogni pubblicazione
+  - Grafo dei coautori
