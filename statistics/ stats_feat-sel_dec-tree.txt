@@ -1,0 +1,213 @@
+feature selection: 551.218 sec elapsed
+normal training decision tree: 388.955 sec elapsed
+   [1] greek        jamaican     italian      chinese      mexican      italian      indian       mexican      italian     
+  [10] chinese      italian      mexican      italian      cajun_creole thai         italian      italian      southern_us 
+  [19] japanese     southern_us  southern_us  italian      indian       southern_us  spanish      italian      moroccan    
+  [28] mexican      french       indian       italian      indian       southern_us  mexican      italian      italian     
+  [37] italian      italian      greek        irish        chinese      mexican      moroccan     irish        irish       
+  [46] japanese     chinese      mexican      indian       spanish      korean       mexican      cajun_creole southern_us 
+  [55] greek        japanese     korean       indian       spanish      mexican      mexican      korean       japanese    
+  [64] greek        chinese      british      southern_us  southern_us  indian       japanese     mexican      mexican     
+  [73] french       mexican      mexican      mexican      greek        indian       indian       mexican      chinese     
+  [82] cajun_creole italian      italian      italian      indian       thai         mexican      mexican      korean      
+  [91] indian       korean       moroccan     italian      mexican      southern_us  chinese      cajun_creole french      
+ [100] filipino     indian       mexican      italian      cajun_creole japanese     korean       french       spanish     
+ [109] japanese     mexican      chinese      thai         cajun_creole indian       russian      korean       italian     
+ [118] french       cajun_creole mexican      italian      mexican      southern_us  italian      cajun_creole italian     
+ [127] southern_us  filipino     italian      mexican      mexican      mexican      mexican      jamaican     southern_us 
+ [136] french       mexican      indian       vietnamese   mexican      indian       southern_us  italian      italian     
+ [145] mexican      italian      mexican      mexican      thai         chinese      mexican      italian      mexican     
+ [154] italian      french       korean       french       mexican      greek        spanish      indian       greek       
+ [163] southern_us  greek        italian      southern_us  french       french       french       mexican      italian     
+ [172] cajun_creole chinese      italian      italian      korean       italian      spanish      vietnamese   greek       
+ [181] southern_us  greek        italian      filipino     spanish      italian      vietnamese   mexican      italian     
+ [190] southern_us  french       french       mexican      italian      indian       japanese     mexican      thai        
+ [199] russian      russian      spanish      italian      italian      italian      vietnamese   mexican      french      
+ [208] cajun_creole mexican      korean       italian      mexican      italian      italian      thai         chinese     
+ [217] indian       jamaican     italian      chinese      italian      japanese     italian      cajun_creole italian     
+ [226] irish        french       italian      french       italian      italian      mexican      french       mexican     
+ [235] thai         moroccan     mexican      southern_us  southern_us  indian       mexican      italian      italian     
+ [244] thai         italian      moroccan     italian      cajun_creole italian      korean       mexican      indian      
+ [253] spanish      italian      indian       mexican      brazilian    british      indian       french       thai        
+ [262] russian      southern_us  vietnamese   thai         greek        french       italian      italian      japanese    
+ [271] indian       italian      spanish      mexican      mexican      indian       chinese      mexican      indian      
+ [280] italian      indian       mexican      japanese     mexican      italian      southern_us  irish        brazilian   
+ [289] indian       southern_us  italian      jamaican     chinese      french       chinese      mexican      italian     
+ [298] italian      italian      mexican      southern_us  southern_us  korean       irish        indian       japanese    
+ [307] greek        italian      southern_us  cajun_creole chinese      french       french       italian      brazilian   
+ [316] mexican      mexican      mexican      italian      mexican      indian       mexican      spanish      cajun_creole
+ [325] italian      italian      thai         japanese     italian      cajun_creole italian      thai         italian     
+ [334] southern_us  southern_us  southern_us  italian      mexican      french       japanese     chinese      indian      
+ [343] korean       mexican      japanese     italian      southern_us  french       cajun_creole korean       french      
+ [352] vietnamese   indian       mexican      mexican      filipino     mexican      indian       british      italian     
+ [361] chinese      chinese      thai         indian       cajun_creole italian      french       mexican      japanese    
+ [370] indian       italian      chinese      filipino     southern_us  brazilian    mexican      cajun_creole cajun_creole
+ [379] italian      indian       japanese     italian      thai         mexican      filipino     mexican      mexican     
+ [388] italian      spanish      mexican      filipino     spanish      mexican      brazilian    italian      chinese     
+ [397] mexican      italian      korean       thai         vietnamese   indian       southern_us  mexican      southern_us 
+ [406] southern_us  southern_us  spanish      italian      indian       mexican      moroccan     italian      mexican     
+ [415] southern_us  mexican      italian      italian      french       mexican      japanese     italian      italian     
+ [424] cajun_creole mexican      italian      chinese      indian       chinese      italian      southern_us  chinese     
+ [433] greek        indian       greek        southern_us  chinese      mexican      southern_us  italian      russian     
+ [442] cajun_creole italian      italian      italian      moroccan     greek        mexican      southern_us  greek       
+ [451] mexican      italian      irish        french       filipino     cajun_creole spanish      moroccan     japanese    
+ [460] russian      southern_us  vietnamese   mexican      spanish      brazilian    italian      southern_us  mexican     
+ [469] southern_us  italian      indian       mexican      italian      cajun_creole italian      vietnamese   southern_us 
+ [478] italian      filipino     chinese      italian      italian      mexican      russian      italian      italian     
+ [487] southern_us  korean       italian      french       indian       italian      french       mexican      italian     
+ [496] italian      southern_us  southern_us  cajun_creole southern_us  french       chinese      cajun_creole thai        
+ [505] italian      mexican      british      greek        thai         filipino     mexican      italian      mexican     
+ [514] jamaican     indian       greek        mexican      indian       jamaican     italian      french       moroccan    
+ [523] korean       indian       thai         irish        southern_us  italian      filipino     chinese      french      
+ [532] italian      cajun_creole chinese      southern_us  italian      russian      filipino     vietnamese   mexican     
+ [541] french       italian      mexican      italian      indian       chinese      korean       chinese      french      
+ [550] mexican      vietnamese   italian      indian       southern_us  greek        chinese      moroccan     french      
+ [559] jamaican     mexican      mexican      mexican      mexican      italian      spanish      italian      italian     
+ [568] japanese     chinese      vietnamese   mexican      cajun_creole british      italian      russian      italian     
+ [577] southern_us  mexican      mexican      italian      italian      chinese      indian       indian       cajun_creole
+ [586] italian      southern_us  cajun_creole indian       greek        vietnamese   mexican      chinese      indian      
+ [595] brazilian    jamaican     italian      italian      jamaican     british      italian      mexican      italian     
+ [604] japanese     cajun_creole indian       spanish      cajun_creole mexican      mexican      indian       italian     
+ [613] filipino     thai         french       jamaican     southern_us  korean       mexican      chinese      mexican     
+ [622] italian      southern_us  mexican      cajun_creole italian      italian      cajun_creole southern_us  british     
+ [631] indian       thai         italian      italian      italian      chinese      italian      french       mexican     
+ [640] indian       japanese     moroccan     southern_us  french       cajun_creole mexican      british      chinese     
+ [649] moroccan     vietnamese   italian      southern_us  chinese      southern_us  italian      cajun_creole british     
+ [658] mexican      southern_us  mexican      mexican      chinese      southern_us  french       southern_us  italian     
+ [667] vietnamese   southern_us  mexican      greek        mexican      japanese     mexican      thai         southern_us 
+ [676] chinese      indian       moroccan     french       italian      greek        italian      korean       spanish     
+ [685] indian       thai         french       thai         mexican      british      brazilian    indian       french      
+ [694] mexican      indian       cajun_creole moroccan     korean       italian      indian       thai         indian      
+ [703] southern_us  indian       chinese      chinese      italian      thai         southern_us  italian      mexican     
+ [712] thai         thai         vietnamese   italian      indian       filipino     mexican      french       mexican     
+ [721] greek        mexican      mexican      italian      indian       spanish      vietnamese   japanese     italian     
+ [730] italian      italian      cajun_creole japanese     mexican      mexican      southern_us  indian       southern_us 
+ [739] spanish      southern_us  italian      indian       british      korean       british      japanese     cajun_creole
+ [748] southern_us  italian      italian      southern_us  southern_us  british      southern_us  jamaican     mexican     
+ [757] cajun_creole chinese      southern_us  southern_us  italian      french       southern_us  cajun_creole mexican     
+ [766] italian      japanese     southern_us  mexican      indian       italian      italian      filipino     indian      
+ [775] greek        southern_us  italian      greek        mexican      indian       southern_us  italian      southern_us 
+ [784] mexican      korean       thai         french       cajun_creole chinese      indian       french       japanese    
+ [793] cajun_creole indian       italian      italian      filipino     french       italian      southern_us  thai        
+ [802] chinese      indian       french       southern_us  irish        french       filipino     mexican      italian     
+ [811] chinese      french       mexican      russian      italian      indian       southern_us  mexican      indian      
+ [820] moroccan     spanish      italian      vietnamese   french       chinese      chinese      irish        italian     
+ [829] japanese     mexican      italian      chinese      italian      southern_us  mexican      irish        vietnamese  
+ [838] japanese     chinese      italian      italian      italian      french       french       cajun_creole thai        
+ [847] indian       italian      southern_us  southern_us  mexican      moroccan     thai         indian       korean      
+ [856] mexican      southern_us  mexican      chinese      mexican      italian      italian      french       mexican     
+ [865] chinese      italian      italian      mexican      italian      italian      italian      spanish      indian      
+ [874] chinese      southern_us  thai         mexican      mexican      italian      italian      cajun_creole french      
+ [883] italian      irish        italian      chinese      italian      cajun_creole italian      french       italian     
+ [892] moroccan     southern_us  indian       mexican      mexican      italian      italian      irish        southern_us 
+ [901] chinese      italian      italian      filipino     southern_us  british      mexican      korean       vietnamese  
+ [910] italian      indian       spanish      indian       chinese      japanese     southern_us  italian      irish       
+ [919] chinese      italian      indian       mexican      jamaican     indian       brazilian    korean       moroccan    
+ [928] chinese      southern_us  mexican      italian      southern_us  french       mexican      mexican      greek       
+ [937] italian      indian       filipino     southern_us  southern_us  italian      southern_us  mexican      mexican     
+ [946] southern_us  southern_us  chinese      italian      mexican      irish        mexican      italian      chinese     
+ [955] italian      southern_us  italian      french       italian      italian      mexican      korean       indian      
+ [964] southern_us  french       jamaican     chinese      french       indian       french       italian      southern_us 
+ [973] filipino     southern_us  italian      french       italian      southern_us  southern_us  mexican      cajun_creole
+ [982] filipino     vietnamese   cajun_creole southern_us  southern_us  mexican      mexican      indian       italian     
+ [991] british      chinese      thai         indian       chinese      southern_us  italian      italian      southern_us 
+[1000] italian     
+ [ reached getOption("max.print") -- omitted 5214 entries ]
+20 Levels: brazilian british cajun_creole chinese filipino french greek indian irish italian jamaican japanese ... vietnamese
+[1] "matrix"
+[1] "matrix"
+Confusion Matrix and Statistics
+
+              Reference
+Prediction     brazilian british cajun_creole chinese filipino french greek indian irish italian jamaican japanese korean
+  brazilian            0       0            0       0        0    104     0      1     0       2        0        0      0
+  british              0       0            0       1        0    190     0      1     0       2        0        0      0
+  cajun_creole         0       0          117       4        0    232     0      0     0       4        0        0      0
+  chinese              0       0            0     307        0    192     0      0     0       0        0        5      0
+  filipino             0       0            0      70        0    105     0      0     0       0        0        0      0
+  french               0       0            0       2        0    487     1      0     0      12        0        0      0
+  greek                0       0            0       1        0    216    60      0     0      11        0        0      0
+  indian               0       0            0       7        0    302     1    132     0       0        0        0      0
+  irish                0       0            0       2        0    151     0      0     0       1        0        0      0
+  italian              0       0            1       3        0    433     4      0     0      96        0        0      0
+  jamaican             0       0            0      23        0    109     0      0     0       0        0        0      0
+  japanese             0       0            0     101        0    165     0     11     0       1        0       71      0
+  korean               0       0            0     109        0     70     0      0     0       0        0       10      0
+  mexican              0       0            0       2        0    285     1      0     0       4        0        0      0
+  moroccan             0       0            0       1        0    108     1      0     0       1        0        0      0
+  russian              0       0            0       0        0    110     0      0     0       0        0        0      0
+  southern_us          0       0           11       0        0    456     1      0     0      10        0        0      0
+  spanish              0       0            0       1        0    230     0      0     0       2        0        0      0
+  thai                 0       0            0     100        0    146     0      1     0       0        0        1      0
+  vietnamese           0       0            0      53        0     78     0      0     0       0        0        0      0
+              Reference
+Prediction     mexican moroccan russian southern_us spanish thai vietnamese
+  brazilian          0        4       0           0       0    1          0
+  british            0        0       0           0       0    0          0
+  cajun_creole       0        9       0           0       0    0          0
+  chinese            0        0       0           0       0    9          0
+  filipino           0        0       0           0       0   21          0
+  french             0        4       0           0       0    0          0
+  greek              0       10       0           0       0    0          0
+  indian             0       68       0           0       0    1          0
+  irish              0        1       0           0       0    0          0
+  italian            0        3       0           0       0    0          0
+  jamaican           0        3       0           0       0    0          0
+  japanese           0        2       0           0       0    1          0
+  korean             0        0       0           0       0    7          0
+  mexican          126       80       0           0       0    0          0
+  moroccan           0       82       0           0       0    0          0
+  russian            0        1       0           0       0    0          0
+  southern_us        1        5       0           0       0    0          0
+  spanish            2       12       0           0       0    0          0
+  thai               2        6       0           0       0  129          0
+  vietnamese         0        0       0           0       0   91          0
+
+Overall Statistics
+                                          
+               Accuracy : 0.2586          
+                 95% CI : (0.2478, 0.2697)
+    No Information Rate : 0.6709          
+    P-Value [Acc > NIR] : 1               
+                                          
+                  Kappa : 0.1965          
+ Mcnemar's Test P-Value : NA              
+
+Statistics by Class:
+
+                     Class: brazilian Class: british Class: cajun_creole Class: chinese Class: filipino Class: french
+Sensitivity                        NA             NA             0.90698        0.39009              NA       0.11681
+Specificity                   0.98198        0.96878             0.95908        0.96204         0.96846       0.99071
+Pos Pred Value                     NA             NA             0.31967        0.59844              NA       0.96245
+Neg Pred Value                     NA             NA             0.99795        0.91580              NA       0.35494
+Prevalence                    0.00000        0.00000             0.02076        0.12665         0.00000       0.67090
+Detection Rate                0.00000        0.00000             0.01883        0.04940         0.00000       0.07837
+Detection Prevalence          0.01802        0.03122             0.05890        0.08256         0.03154       0.08143
+Balanced Accuracy                  NA             NA             0.93303        0.67607              NA       0.55376
+                     Class: greek Class: indian Class: irish Class: italian Class: jamaican Class: japanese Class: korean
+Sensitivity              0.869565       0.90411           NA        0.65753              NA         0.81609            NA
+Specificity              0.961269       0.93754      0.97506        0.92683         0.97827         0.95414       0.96846
+Pos Pred Value           0.201342       0.25832           NA        0.17778              NA         0.20170            NA
+Neg Pred Value           0.998479       0.99755           NA        0.99119              NA         0.99727            NA
+Prevalence               0.011104       0.02350      0.00000        0.02350         0.00000         0.01400       0.00000
+Detection Rate           0.009656       0.02124      0.00000        0.01545         0.00000         0.01143       0.00000
+Detection Prevalence     0.047956       0.08223      0.02494        0.08690         0.02173         0.05665       0.03154
+Balanced Accuracy        0.915417       0.92083           NA        0.79218              NA         0.88511            NA
+                     Class: mexican Class: moroccan Class: russian Class: southern_us Class: spanish Class: thai
+Sensitivity                 0.96183         0.28276             NA                 NA             NA     0.49615
+Specificity                 0.93885         0.98126        0.98214            0.92211        0.96025     0.95700
+Pos Pred Value              0.25301         0.42487             NA                 NA             NA     0.33506
+Neg Pred Value              0.99913         0.96545             NA                 NA             NA     0.97753
+Prevalence                  0.02108         0.04667        0.00000            0.00000        0.00000     0.04184
+Detection Rate              0.02028         0.01320        0.00000            0.00000        0.00000     0.02076
+Detection Prevalence        0.08014         0.03106        0.01786            0.07789        0.03975     0.06196
+Balanced Accuracy           0.95034         0.63201             NA                 NA             NA     0.72658
+                     Class: vietnamese
+Sensitivity                         NA
+Specificity                    0.96427
+Pos Pred Value                      NA
+Neg Pred Value                      NA
+Prevalence                     0.00000
+Detection Rate                 0.00000
+Detection Prevalence           0.03573
+Balanced Accuracy                   NA

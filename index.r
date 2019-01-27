@@ -1,21 +1,27 @@
 # Configuration variables
 source("config.r")
 
+# Packages manager
+source("packages.r")
+
 # Loading libs
-library(e1071) # svm
-library(caret) # train and trainControl
-library(doParallel) # parallelizing train function
-library(pROC) # ROC curve
-library(mlbench) # for now nothing
-library(tictoc) # timings
+# library(e1071) # svm
+# library(caret) # train and trainControl
+# library(doParallel) # parallelizing train function
+# library(pROC) # ROC curve
+# library(mlbench) # for now nothing
+# library(tictoc) # timings
+
+using("e1071", "caret", "doParallel", "pROC", "mlbench", "tictoc", "rpart")
 
 set.seed(314)    # Set seed for reproducible results
 ###### Redirect output to file
-sink(paste("statistics/", filename))
+sink(paste("statistics/", filename, sep = ""))
 
 ###### READING INPUT
 #dataset = read.csv2("dataset/matrix_train.csv")
-dataset = read.csv2("dataset/max_recipes.csv")
+#dataset = read.csv2("dataset/max_recipes.csv")
+dataset = read.csv2(toString(use_dataset))
 
 ###### FEATURE SELECTION
 if (feature_selection) {
@@ -38,33 +44,66 @@ if (feature_selection) {
 
 ###### TRAINING AND TESTING
 if (k_fold) {
-  tic("10-fold cross validation")
-  # 10-fold cross-validation
   train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
   cl = makePSOCKcluster(2)
   registerDoParallel(cl, cores = 2)
+  if (model == "svm") {
+    tic("10-fold cross validation SVM")
+    # 10-fold cross-validation
+    # train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
+    # cl = makePSOCKcluster(2)
+    # registerDoParallel(cl, cores = 2)
+    # use 10-fold and extract correct information
+    svm.model = train(cuisine ~ ., data=dataset, method = "svmLinear2", trControl = train_ctrl)
+    stopCluster(cl)
+    toc()
+    #svm.model$resample # accuracy - kappa - n° fold
+    matrix = confusionMatrix(data = svm.model$pred$pred, reference = svm.model$pred$obs)
+  } else if (model == "dec-tree") {
+    tic("10-fold cross validation decision tree")
+    # 10-fold cross-validation
+    # train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
+    # cl = makePSOCKcluster(2)
+    # registerDoParallel(cl, cores = 2)
+    # use 10-fold and extract correct information
+    decisiontree.model = train(cuisine ~ ., data=dataset, method = "rpart", trControl = train_ctrl)
+    stopCluster(cl)
+    toc()
+    #svm.model$resample # accuracy - kappa - n° fold
+    matrix = confusionMatrix(data = decisiontree.model$pred$pred, reference = decisiontree.model$pred$obs)
+  }
+  tic("10-fold cross validation training and testing")
+  # 10-fold cross-validation
+  train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
+  #cl = makePSOCKcluster(2)
+  #registerDoParallel(cl, cores = 2)
   # use 10-fold and extract correct information
   svm.model = train(cuisine ~ ., data=dataset, method = "svmLinear2", trControl = train_ctrl)
-  stopCluster(cl)
+  #stopCluster(cl)
   toc()
   #svm.model$resample # accuracy - kappa - n° fold
   matrix = confusionMatrix(data = svm.model$pred$pred, reference = svm.model$pred$obs)
 } else {
-  tic("normal training SVM")
   n = nrow(dataset)  # Number of observations
   ntrain = round(n*0.75)  # 75% for training set
   tindex = sample(n, ntrain)   # Create a random index
   train = dataset[tindex,]   # Create training set
   test = dataset[-tindex,]   # Create test set
-  svm.model = svm(cuisine ~ ., data=train, method="C-classification", kernel="linear")
-  prediction = predict(svm.model, test)
-  toc()
+  if (model == "svm") {
+    tic("normal training SVM")
+    svm.model = svm(cuisine ~ ., data=train, method="C-classification", kernel="linear")
+    prediction = predict(svm.model, test)
+    toc()
+  } else if (model == "dec-tree") {
+    tic("normal training decision tree")
+    decisiontree.model = rpart(cuisine ~ ., data=train, method="class")
+    prediction = predict(decisiontree.model, test, type="class")
+    toc()
+  }
   matrix = confusionMatrix(test$cuisine, prediction)
 }
 
 ###### Analyzing results
 # TODO: plot svm parameters
 print(matrix)
-
-
 sink()

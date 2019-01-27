@@ -1,0 +1,42 @@
+\(.*\)
+(low(er)?|all|salted|less|semi|reduced|non|sodium|whole)(-|\s)*?(dry|grain|fat|sodium|soft|sweet|salt|sugar|moisture|purpose|free|reduced)
+[0-9]+%
+natural
+fresh
+artificial
+regular
+smart balance
+small
+salted
+fully cooked
+refrigerated
+refried
+refined
+\s+or\s+
+\s+and\s+
+uncook medium
+uncooked
+unflavored
+unhulled
+unsalted
+unseasoned
+unsmoked
+unsulphured
+unsweetened
+thin
+2 1/2 to 3 lb. 
+8 ounc ziti
+a taste of
+, drain
+, cut into serving pieces
+, 1 inch thick
+, thawed and squeezed dry
+, cook and drain
+, cut french into loaf
+, split and toast
+, thawed and squeezed dry
+, rins and drain
+, peel and devein
+, undrain
+, fine chop
+^\s*|\s*$
