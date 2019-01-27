@@ -75,6 +75,9 @@ if (k_fold) {
   tic("10-fold cross validation training and testing")
   # 10-fold cross-validation
   train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
+  tic("10-fold cross validation training and testing")
+  # 10-fold cross-validation
+  train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
   #cl = makePSOCKcluster(2)
   #registerDoParallel(cl, cores = 2)
   # use 10-fold and extract correct information

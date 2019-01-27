@@ -12,9 +12,5 @@ if (k_fold) {
 if (feature_selection) {
   filename = paste(filename, "feat-sel", sep = "_")
 }
-<<<<<<< HEAD
 filename = paste(filename, toString(model), sep="_")
 filename = paste(filename, ".txt", sep="")
-=======
-filename = paste(filename, ".txt", sep = "")
->>>>>>> d4ccbb928b127e255c605d4cfe303807b4073287
