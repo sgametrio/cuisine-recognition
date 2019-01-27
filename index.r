@@ -11,7 +11,7 @@ library(tictoc) # timings
 
 set.seed(314)    # Set seed for reproducible results
 ###### Redirect output to file
-sink(paste("statistics/", filename))
+sink(paste("statistics/", filename, sep = ""))
 
 ###### READING INPUT
 #dataset = read.csv2("dataset/matrix_train.csv")
@@ -38,14 +38,14 @@ if (feature_selection) {
 
 ###### TRAINING AND TESTING
 if (k_fold) {
-  tic("10-fold cross validation")
+  tic("10-fold cross validation training and testing")
   # 10-fold cross-validation
   train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
-  cl = makePSOCKcluster(2)
-  registerDoParallel(cl, cores = 2)
+  #cl = makePSOCKcluster(2)
+  #registerDoParallel(cl, cores = 2)
   # use 10-fold and extract correct information
   svm.model = train(cuisine ~ ., data=dataset, method = "svmLinear2", trControl = train_ctrl)
-  stopCluster(cl)
+  #stopCluster(cl)
   toc()
   #svm.model$resample # accuracy - kappa - n° fold
   matrix = confusionMatrix(data = svm.model$pred$pred, reference = svm.model$pred$obs)
