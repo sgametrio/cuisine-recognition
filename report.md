@@ -7,6 +7,7 @@
     ![Distribuzione ricette per tipo di cucina](./_report-assets/cuisine_distribution_dataset.png)
 
     Spiegare perchè abbiamo ridotto le ricette italiane, messicane, etc... (perchè) e di quanto
+    Ridotte fino a 2000 ricette per tipo di cucina e plottare anche quella roba lì
 
 - 10-fold cross validation (controllare varianza per vedere se è un buon modello o meno)
 
@@ -14,6 +15,11 @@
     - https://www.analyticsvidhya.com/blog/2018/05/improve-model-performance-cross-validation-in-python-r/
     - http://topepo.github.io/caret/model-training-and-tuning.html
   - Fare plot e ROC per ogni fold e ogni classe
+
+- Feature selection
+
+  - https://machinelearningmastery.com/feature-selection-with-the-caret-r-package/
+  - 
 
 # Data Technology 
 
