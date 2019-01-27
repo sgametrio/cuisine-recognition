@@ -4,6 +4,7 @@ feature_selection = TRUE
 use_dataset = "dataset/max2k_recipes.csv"
 model = "dec-tree"
 
+
 # Output filename based on config variables. Leave this at the end of config file
 filename = "stats"
 if (k_fold) {

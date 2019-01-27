@@ -4,8 +4,16 @@ let dataset = JSON.parse(fs.readFileSync(__dirname + "/../dataset/regex-cleaned-
 // Output as csv dataset in the following form (sparse matrix):
 // recipe_id(optional);cuisine(target);ingredient_1;ingredient_2;....;ingredient_n;
 // 12345;italian;1;0;1;0;....;0;
+
+/*** Preprocessing steps
+ * - Transform recipes JSON to a CSV matrix (recipe x ingredient)
+ * - Max MAX_RECIPES recipes for cuisine (to remove most of bias)
+ */
+
+const MAX_RECIPES = 500
+
 let cuisines_count = {}
-let ingredients = []
+let ingredients = new Map() // ingredient => { quantity }
 let recipes = []
 for (let recipe of dataset) {
    let new_recipe = {}
@@ -15,21 +23,23 @@ for (let recipe of dataset) {
       cuisines_count[recipe.cuisine] = 1
    } else {
       // use max 2k recipes for each cuisine
-      if (cuisines_count[recipe.cuisine] >= 2000) {
+      if (cuisines_count[recipe.cuisine] >= MAX_RECIPES) {
          continue
       }
       cuisines_count[recipe.cuisine] += 1
    }
 
-   let recipe_ingredients = []
    for (let ingredient of recipe.ingredients) {
-      if (!ingredients.includes(ingredient)) {
-         ingredients.push(ingredient)
+      // count ingredients in recipes
+      if(!ingredients.has(ingredient)) {
+         ingredients.set(ingredient, { quantity: 1 })
+      } else {
+         quantity = ingredients.get(ingredient).quantity
+         ingredients.set(ingredient, { quantity: quantity + 1 })
       }
-      recipe_ingredients.push(ingredient)
    }
    
-   new_recipe.ingredients = recipe_ingredients
+   new_recipe.ingredients = recipe.ingredients
    recipes.push(new_recipe)
 }
 
@@ -38,7 +48,7 @@ let stream = fs.createWriteStream(__dirname + "/../dataset/max2k_recipes.csv", {
 
 // write header line
 csv_output += "cuisine"
-for (let ingredient of ingredients) {
+for (let ingredient of ingredients.keys()) {
    csv_output += ";" + ingredient
 }
 csv_output += '\n'
@@ -48,7 +58,7 @@ stream.write(csv_output)
 for (let recipe of recipes) {
    csv_output = ""
    csv_output += recipe.cuisine
-   for (let ingredient of ingredients) {
+   for (let ingredient of ingredients.keys()) {
       csv_output += (recipe.ingredients.includes(ingredient)) ? ";1" : ";0"
    }
    csv_output += '\n'

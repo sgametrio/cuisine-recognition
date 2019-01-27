@@ -18,7 +18,7 @@ set.seed(314)    # Set seed for reproducible results
 ###### Redirect output to file
 sink(paste("statistics/", filename, sep = ""))
 
-###### READING INPUT
+###### READING DATASET
 #dataset = read.csv2("dataset/matrix_train.csv")
 #dataset = read.csv2("dataset/max_recipes.csv")
 dataset = read.csv2(toString(use_dataset))
@@ -81,11 +81,30 @@ if (k_fold) {
   #cl = makePSOCKcluster(2)
   #registerDoParallel(cl, cores = 2)
   # use 10-fold and extract correct information
-  svm.model = train(cuisine ~ ., data=dataset, method = "svmLinear2", trControl = train_ctrl)
+  svm.model = train(cuisine ~ ., data=dataset, method = "svmLinear2", trControl = train_ctrl, metric = "ROC")
   #stopCluster(cl)
   toc()
   #svm.model$resample # accuracy - kappa - n° fold
   matrix = confusionMatrix(data = svm.model$pred$pred, reference = svm.model$pred$obs)
+  
+  #### Plot ROCs
+  if (FALSE) {
+    
+    for_lift = data.frame(Class = svm.model$pred$obs, rf = svm.model$pred$R, resample = svm.model$pred$Resample)
+    lift_df = data.frame()
+    for (fold in unique(for_lift$resample)) {
+      fold_df = dplyr::filter(for_lift, resample == fold)
+      lift_obj_data = lift(Class ~ rf, data = fold_df)$data
+      lift_obj_data$fold = fold
+      lift_df = rbind(lift_df, lift_obj_data)
+    }
+    lift_obj = lift(Class ~ rf, data = for_lift)
+    
+    ggplot(lift_df) +
+      geom_line(aes(1 - Sp, Sn, color = fold)) +
+      scale_color_discrete(guide = guide_legend(title = "Fold"))
+  }
+  
 } else {
   n = nrow(dataset)  # Number of observations
   ntrain = round(n*0.75)  # 75% for training set
@@ -104,6 +123,7 @@ if (k_fold) {
     toc()
   }
   matrix = confusionMatrix(test$cuisine, prediction)
+  # TODO: ROC curve plotting
 }
 
 ###### Analyzing results

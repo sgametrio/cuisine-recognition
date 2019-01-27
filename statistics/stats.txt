@@ -1,0 +1,1 @@
+normal training SVM: 24.979 sec elapsed
