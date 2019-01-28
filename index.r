@@ -21,7 +21,7 @@ sink(paste("statistics/", filename, sep = ""))
 ###### READING DATASET
 #dataset = read.csv2("dataset/matrix_train.csv")
 #dataset = read.csv2("dataset/max_recipes.csv")
-dataset = read.csv2(toString(use_dataset))
+dataset = read.csv2(dataset_file)
 
 ###### FEATURE SELECTION
 if (feature_selection) {
@@ -75,9 +75,6 @@ if (k_fold) {
   tic("10-fold cross validation training and testing")
   # 10-fold cross-validation
   train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
-  tic("10-fold cross validation training and testing")
-  # 10-fold cross-validation
-  train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
   #cl = makePSOCKcluster(2)
   #registerDoParallel(cl, cores = 2)
   # use 10-fold and extract correct information
@@ -113,8 +110,8 @@ if (k_fold) {
   test = dataset[-tindex,]   # Create test set
   if (model == "svm") {
     tic("normal training SVM")
-    svm.model = svm(cuisine ~ ., data=train, method="C-classification", kernel="linear")
-    prediction = predict(svm.model, test)
+    svm.model = svm(cuisine ~ ., data=train, method="C-classification", kernel="linear", probability = TRUE)
+    prediction = predict(svm.model, test, probability = TRUE)
     toc()
   } else if (model == "dec-tree") {
     tic("normal training decision tree")
@@ -124,9 +121,11 @@ if (k_fold) {
   }
   matrix = confusionMatrix(test$cuisine, prediction)
   # TODO: ROC curve plotting
+  mroc = multiclass.roc(test$cuisine, pred, plot=TRUE)
 }
 
 ###### Analyzing results
 # TODO: plot svm parameters
+# TODO: manual cross-validation 
 print(matrix)
 sink()

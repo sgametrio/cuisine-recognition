@@ -1,8 +1,8 @@
 # Do not comment variables, instead change their values
-k_fold = TRUE
-feature_selection = TRUE
-use_dataset = "dataset/max2k_recipes.csv"
-model = "dec-tree"
+k_fold = FALSE
+feature_selection = FALSE
+dataset_file = "dataset/max_recipes.csv"
+model = "svm"
 
 
 # Output filename based on config variables. Leave this at the end of config file
