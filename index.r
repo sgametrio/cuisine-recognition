@@ -4,14 +4,6 @@ source("config.r")
 # Packages manager
 source("packages.r")
 
-# Loading libs
-# library(e1071) # svm
-# library(caret) # train and trainControl
-# library(doParallel) # parallelizing train function
-# library(pROC) # ROC curve
-# library(mlbench) # for now nothing
-# library(tictoc) # timings
-
 using("e1071", "caret", "doParallel", "pROC", "mlbench", "tictoc", "rpart")
 
 set.seed(314)    # Set seed for reproducible results
@@ -19,8 +11,6 @@ set.seed(314)    # Set seed for reproducible results
 sink(paste("statistics/", filename, sep = ""))
 
 ###### READING DATASET
-#dataset = read.csv2("dataset/matrix_train.csv")
-#dataset = read.csv2("dataset/max_recipes.csv")
 dataset = read.csv2(dataset_file)
 
 ###### FEATURE SELECTION
@@ -31,9 +21,7 @@ if (feature_selection) {
   # find attributes that are highly corrected (ideally >0.75)
   highlyCorrelated = findCorrelation(correlationMatrix, cutoff=0.75)
   # Remove highly correlated features
-  for (variable in highlyCorrelated) {
-    dataset = dataset[,-variable]
-  }
+  dataset = dataset[,-highlyCorrelated]
   toc()
 }
 
@@ -45,62 +33,23 @@ if (feature_selection) {
 ###### TRAINING AND TESTING
 if (k_fold) {
   train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
-  cl = makePSOCKcluster(2)
-  registerDoParallel(cl, cores = 2)
   if (model == "svm") {
     tic("10-fold cross validation SVM")
-    # 10-fold cross-validation
-    # train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
-    # cl = makePSOCKcluster(2)
-    # registerDoParallel(cl, cores = 2)
     # use 10-fold and extract correct information
     svm.model = train(cuisine ~ ., data=dataset, method = "svmLinear2", trControl = train_ctrl)
-    stopCluster(cl)
     toc()
     #svm.model$resample # accuracy - kappa - n° fold
     matrix = confusionMatrix(data = svm.model$pred$pred, reference = svm.model$pred$obs)
   } else if (model == "dec-tree") {
     tic("10-fold cross validation decision tree")
-    # 10-fold cross-validation
-    # train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
-    # cl = makePSOCKcluster(2)
-    # registerDoParallel(cl, cores = 2)
     # use 10-fold and extract correct information
     decisiontree.model = train(cuisine ~ ., data=dataset, method = "rpart", trControl = train_ctrl)
-    stopCluster(cl)
     toc()
     #svm.model$resample # accuracy - kappa - n° fold
     matrix = confusionMatrix(data = decisiontree.model$pred$pred, reference = decisiontree.model$pred$obs)
   }
-  tic("10-fold cross validation training and testing")
-  # 10-fold cross-validation
-  train_ctrl = trainControl(method = "cv", savePredictions = TRUE, classProbs = TRUE)
-  #cl = makePSOCKcluster(2)
-  #registerDoParallel(cl, cores = 2)
-  # use 10-fold and extract correct information
-  svm.model = train(cuisine ~ ., data=dataset, method = "svmLinear2", trControl = train_ctrl, metric = "ROC")
-  #stopCluster(cl)
-  toc()
   #svm.model$resample # accuracy - kappa - n° fold
   matrix = confusionMatrix(data = svm.model$pred$pred, reference = svm.model$pred$obs)
-  
-  #### Plot ROCs
-  if (FALSE) {
-    
-    for_lift = data.frame(Class = svm.model$pred$obs, rf = svm.model$pred$R, resample = svm.model$pred$Resample)
-    lift_df = data.frame()
-    for (fold in unique(for_lift$resample)) {
-      fold_df = dplyr::filter(for_lift, resample == fold)
-      lift_obj_data = lift(Class ~ rf, data = fold_df)$data
-      lift_obj_data$fold = fold
-      lift_df = rbind(lift_df, lift_obj_data)
-    }
-    lift_obj = lift(Class ~ rf, data = for_lift)
-    
-    ggplot(lift_df) +
-      geom_line(aes(1 - Sp, Sn, color = fold)) +
-      scale_color_discrete(guide = guide_legend(title = "Fold"))
-  }
   
 } else {
   n = nrow(dataset)  # Number of observations
@@ -111,7 +60,7 @@ if (k_fold) {
   if (model == "svm") {
     tic("normal training SVM")
     svm.model = svm(cuisine ~ ., data=train, method="C-classification", kernel="linear", probability = TRUE)
-    prediction = predict(svm.model, test, probability = TRUE)
+    prediction = predict(svm.model, test)
     toc()
   } else if (model == "dec-tree") {
     tic("normal training decision tree")
@@ -120,8 +69,26 @@ if (k_fold) {
     toc()
   }
   matrix = confusionMatrix(test$cuisine, prediction)
-  # TODO: ROC curve plotting
-  mroc = multiclass.roc(test$cuisine, pred, plot=TRUE)
+  # Calculate AUC and ROC for every cuisine
+  cuisine_auc = list()
+  i = 1
+  print("cuisine   -   AUC")
+  for (cuisine in levels(prediction)) {
+    copy_prediction = prediction
+    copy_target = test$cuisine
+    levels(copy_prediction)[levels(copy_prediction) != cuisine] = 0
+    levels(copy_prediction)[levels(copy_prediction) == cuisine] = 1
+    levels(copy_target)[levels(copy_target) != cuisine] = 0
+    levels(copy_target)[levels(copy_target) == cuisine] = 1
+    cuisine_auc[[cuisine]] = roc(as.numeric(copy_target), as.numeric(copy_prediction))
+    i = i+1
+  }
+  colors = rainbow(length(levels(prediction)))
+  plot(cuisine_auc[[levels(prediction)[1]]], col = colors[1], lty=1, lwd=1)
+  for (i in 2:length(levels(prediction))) {
+    plot(cuisine_auc[[levels(prediction)[i]]], col = colors[i], add = TRUE, lty=1, lwd=1)
+  }
+  legend(-0.02, 1, legend = levels(prediction), col = colors, lty=1, lwd=1)
 }
 
 ###### Analyzing results

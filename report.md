@@ -16,6 +16,11 @@
     - http://topepo.github.io/caret/model-training-and-tuning.html
   - Fare plot e ROC per ogni fold e ogni classe
 
+- ROC
+
+  - https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5
+  - https://www.r-bloggers.com/calculating-auc-the-area-under-a-roc-curve/
+
 - Feature selection
 
   - https://machinelearningmastery.com/feature-selection-with-the-caret-r-package/

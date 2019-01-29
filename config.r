@@ -2,16 +2,18 @@
 k_fold = FALSE
 feature_selection = FALSE
 dataset_file = "dataset/max_recipes.csv"
-model = "svm"
+modelsvm = "svm"
+modeldtree = "dec-tree"
+modelnbayes = "n-bayes"
+model = modelsvm
 
 
 # Output filename based on config variables. Leave this at the end of config file
-filename = "stats"
+filename = model
 if (k_fold) {
   filename = paste(filename, "k-fold", sep = "_")
 }
 if (feature_selection) {
   filename = paste(filename, "feat-sel", sep = "_")
 }
-filename = paste(filename, toString(model), sep="_")
 filename = paste(filename, ".txt", sep="")
