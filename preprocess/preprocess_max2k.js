@@ -8,9 +8,11 @@ let dataset = JSON.parse(fs.readFileSync(__dirname + "/../dataset/regex-spacy-cl
 /*** Preprocessing steps
  * - Transform recipes JSON to a CSV matrix (recipe x ingredient)
  * - Max MAX_RECIPES recipes for cuisine (to remove most of bias)
+ * - Max 5 classes to predict (to better handle multiclass analysis problems)
  */
 
-const MAX_RECIPES = 500
+const MAX_RECIPES = 2000
+const MAX_CUISINES = 5
 
 let cuisines_count = {}
 let ingredients = new Map() // ingredient => { quantity }
@@ -20,6 +22,9 @@ for (let recipe of dataset) {
 
    new_recipe.cuisine = recipe.cuisine
    if (!(recipe.cuisine in cuisines_count)) {
+      if (cuisines_count.length >= MAX_CUISINES) {
+        continue
+      }
       cuisines_count[recipe.cuisine] = 1
    } else {
       // use max 2k recipes for each cuisine
@@ -44,7 +49,7 @@ for (let recipe of dataset) {
 }
 
 let csv_output = ""
-let stream = fs.createWriteStream(__dirname + "/../dataset/max2k_recipes.csv", { flags: "w" })
+let stream = fs.createWriteStream(__dirname + "/../dataset/max_5_cuisines_2k_recipes.csv", { flags: "w" })
 
 // write header line
 csv_output += "cuisine"
