@@ -1,0 +1,5 @@
+\(.*\)
+(low(er)?|all|salted|less|semi|reduced|non|sodium|whole|fat)(-|\s)*?(dry|grain|fat|sodium|soft|sweet|salt|sugar|moisture|purpose|free|reduced)
+[0-9]+%
+,(.*)
+^\s*|\s*$

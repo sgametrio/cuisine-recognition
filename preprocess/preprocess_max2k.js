@@ -1,5 +1,5 @@
 const fs = require("fs")
-let dataset = JSON.parse(fs.readFileSync(__dirname + "/../dataset/regex-cleaned-dataset.json"))
+let dataset = JSON.parse(fs.readFileSync(__dirname + "/../dataset/regex-spacy-cleaned-dataset.json"))
 
 // Output as csv dataset in the following form (sparse matrix):
 // recipe_id(optional);cuisine(target);ingredient_1;ingredient_2;....;ingredient_n;

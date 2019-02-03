@@ -1,7 +1,12 @@
 \(.*\)
-(low(er)?|all|salted|less|semi|reduced|non|sodium|whole)(-|\s)*?(dry|grain|fat|sodium|soft|sweet|salt|sugar|moisture|purpose|free|reduced)
+(low(er)?|all|salted|less|semi|reduced|non|sodium|whole|fat)(-|\s)*?(dry|grain|fat|sodium|soft|sweet|salt|sugar|moisture|purpose|free|reduced)
 [0-9]+%
+oven-ready
+extra(-|\s)*?virgin
+dr(y|ied)
 natural
+store bought
+frozen
 fresh
 artificial
 regular
@@ -12,8 +17,8 @@ fully cooked
 refrigerated
 refried
 refined
-\s+or\s+
-\s+and\s+
+\s*or\s+
+\s*and\s+
 uncook medium
 uncooked
 unflavored
@@ -27,16 +32,5 @@ thin
 2 1/2 to 3 lb. 
 8 ounc ziti
 a taste of
-, drain
-, cut into serving pieces
-, 1 inch thick
-, thawed and squeezed dry
-, cook and drain
-, cut french into loaf
-, split and toast
-, thawed and squeezed dry
-, rins and drain
-, peel and devein
-, undrain
-, fine chop
+,(.*)
 ^\s*|\s*$

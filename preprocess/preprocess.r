@@ -1,17 +1,18 @@
-# library(jsonlite)
-# library(stringr)
+print("STARTING PREPROCESS")
+source("config.r")
 source("packages.r")
-using("jsonlite", "stringr")
-trainset = fromJSON("dataset/original-dataset.json")
+using("jsonlite", "stringr", "tictoc")
+print("LOADING DATASET")
+preproc_dataset = fromJSON(toString(dataset_file))
 # Apply to the ingredients list the tolower function
 # lapply is the same as in LISP
-trainset$ingredients <- lapply(trainset$ingredients, function(x) {tolower(x)})
+preproc_dataset$ingredients <- lapply(preproc_dataset$ingredients, function(x) {tolower(x)})
 # Perform an union of all the ingredients sublists
 # Reduce is the same as in LISP
-ingredients <- Reduce(union, trainset$ingredients)
+ingredients <- Reduce(union, preproc_dataset$ingredients)
 # ingredients <- sort(tolower(ingredients))
 # Read all the regex placed in regexes.txt file
-regexes <- readLines(file("preprocess/regexes.txt"))
+regexes <- readLines(file("preprocess/regexes_2.txt"))
 # Collapse them all in one big regex
 toMatch <- paste(regexes, collapse="|")
 lastLength = length(ingredients)
@@ -19,26 +20,18 @@ lastLength = length(ingredients)
 # Perform an union over the sublists and check if the length of ther obtained list is greater than the previous one
 # If so, perform another round
 # Otherwise stop and exit
+print("CLEANING DATASET")
 repeat {
-  trainset$ingredients <- lapply(trainset$ingredients, function(x) {gsub(toMatch, replacement = "", x)})
-  ingredients <- Reduce(union, trainset$ingredients);
-  print(lastLength)
-  print(length(ingredients))
+  preproc_dataset$ingredients <- lapply(preproc_dataset$ingredients, function(x) {gsub(toMatch, replacement = "", x)})
+  ingredients <- Reduce(union, preproc_dataset$ingredients);
+  # print(lastLength)
+  # print(length(ingredients))
   if(length(ingredients) >= lastLength){
     break
   } else {
     lastLength = length(ingredients)
   }
 }
-write_json(trainset, "dataset/regex-cleaned-dataset.json")
-# At the end of the script we have:
-# The "ingredients" var, containing all the possible ingredients
-# Every ingredients sublist in "trainset$ingredients" cleaned due to the regex removal
-# We've maintained the corrispondence between trainset$ingredients and ingredients
-# The next step is to create a data.frame or a table in which we'll have:
-# A cuisine per row (maybe downsampled due to unbalance of italian, mexican and souther_us cuisines wrt the others)
-# An ingredient per column
-# t(i,j) = 1, if cuisine i contains ingredient j, 0 otherwise (where t is the data.frame/table)
-# Maybe it would be claver take in account also how many time an ingredient is used in a particular cuisine (percentage)
-
+print("DONE")
+# write_json(dataset, "dataset/regex-cleaned-dataset.json")
 
