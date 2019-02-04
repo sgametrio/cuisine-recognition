@@ -1,11 +1,13 @@
 import requests
 import json
 from ratelimit import limits, sleep_and_retry
+import timeout_decorator
 
 ONE_MINUTE = 60
 
-#@sleep_and_retry
-#@limits(calls = 20, period = ONE_MINUTE)
+@sleep_and_retry
+@limits(calls = 20, period = ONE_MINUTE)
+@timeout_decorator.timeout(12, exception_message="Timeout of 12 seconds. Continue...")
 def getIngredientsInfo(ingredient):
    params = {
       "nutrition-type": "logging",
@@ -17,14 +19,14 @@ def getIngredientsInfo(ingredient):
       "Accept": "application/json",
       "Content-type": "application/json"
    }
-   response = requests.get("https://api.edamam.com/api/food-database/parser", params = params, headers = headers, timeout = 15)
+   response = requests.get("https://api.edamam.com/api/food-database/parser", params = params, headers = headers, timeout = 10)
    return response.json()
 
-def readRecipeDataset(filename):
+def readJSON(filename):
    with open(filename, "r") as f:
       return json.load(f)
 
-def writeEnrichedRecipes(recipes, filename):
+def writeJSON(recipes, filename):
    with open(filename, "w") as outfile:
       json.dump(recipes, outfile)
 
@@ -120,7 +122,7 @@ def cleanRecipes(recipes):
    return cleaned
 
 def main():
-   recipes = readRecipeDataset("../dataset/original-dataset.json")
+   recipes = readJSON("../dataset/original-dataset.json")
    recipes = enrichRecipes(recipes)
    # Retry recipes with exceptions (maximum 3 times to avoid infinite loop)
    exceptions = [recipe for recipe in recipes if recipe["exception_raised"]]
@@ -130,10 +132,10 @@ def main():
       recipes = mergeRecipes(recipes, retry)
       exceptions = [recipe for recipe in recipes if recipe["exception_raised"]]
       i += 1
-   writeEnrichedRecipes(recipes, "../dataset/enriched-dataset.json")
+   writeJSON(recipes, "../dataset/enriched-dataset.json")
 
    recipes = cleanRecipes(recipes)
-   writeEnrichedRecipes(recipes, "../dataset/cleaned-dataset.json")
+   writeJSON(recipes, "../dataset/cleaned-dataset.json")
 
    # What about missing ingredients: maybe preprocessing before calling the API?
 

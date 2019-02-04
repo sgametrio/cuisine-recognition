@@ -1,16 +1,16 @@
 # Do not comment variables, instead change their values
 zero_mean = FALSE
 feature_selection = FALSE
-do_balance = TRUE
+do_balance = FALSE
 roc = FALSE
-k_fold = TRUE
+k_fold = FALSE
 max_recipes = 1500
 num_fold = 10
-dataset_file = "dataset/original-dataset.json"
+dataset_file = "dataset/cleaned-dataset.json"
 # Available models
 # nb = naive bayes
 # rf = random forest
-model = "nb"
+model = "svmLinear3"
 
 
 # Output filename based on config variables. Leave this at the end of config file

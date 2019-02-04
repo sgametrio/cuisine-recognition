@@ -1,13 +1,15 @@
 # Do a little preprocess
-source("preprocess/preprocess.r")
+#source("preprocess/preprocess.r")
 
+# Helpers function
+source("helpers.r")
 # Configuration variables
-# source("config.r")
+source("config.r")
 
 # Packages manager
 source("packages.r")
 
-using("plyr", "tm", "caret", "pROC", "mlbench", "tictoc", "rpart", "ROCR")
+using("plyr", "tm", "caret", "pROC", "mlbench", "tictoc", "rpart", "ROCR", "jsonlite")
 
 set.seed(314)    # Set seed for reproducible results
 
@@ -16,15 +18,22 @@ sink(paste("statistics/", filename, sep = ""))
 
 ###### BUILDING DOCUMENT TERM MATRIX DATASET
 # dataset = read.csv2(dataset_file)
-corpus = VCorpus(VectorSource(preproc_dataset$ingredients))
-corpus = tm_map(corpus, removeWords, stopwords())
-corpus = tm_map(corpus, removePunctuation)
-corpus = tm_map(corpus, stripWhitespace)
+recipes = fromJSON("dataset/cleaned-dataset.json")
+dataset = fromCleanedRecipes(recipes)
+#corpus = VCorpus(VectorSource(recipes$ingredients_ids))
+#corpus = tm_map(corpus, removeWords, stopwords())
+#corpus = tm_map(corpus, removePunctuation)
+#corpus = tm_map(corpus, stripWhitespace)
 # Create a Document Term Matrix, in which each row is a recipe and each column is a term appearing in some recipe
 # i,j = how many times term j appear in recipe i
-dtm = DocumentTermMatrix(corpus)
+#dtm = DocumentTermMatrix(corpus)
+#dataset = as.data.frame(as.matrix(dtm))
+#dataset = cbind(kcal = recipes$kcal, dataset)
+#dataset = cbind(proteins = recipes$proteins, dataset)
+#dataset = cbind(fat = recipes$fat, dataset)
+#dataset = cbind(carbs = recipes$carbs, dataset)
 # Adding as first column the recipe column
-dataset = cbind(cuisine=preproc_dataset$cuisine, as.data.frame(as.matrix(dtm)))
+#dataset = cbind(cuisine = recipes$cuisine, dataset)
 
 ##### FREE MEMORY
 remove(ingredients, lastLength, regexes, toMatch, preproc_dataset, corpus, dtm)
