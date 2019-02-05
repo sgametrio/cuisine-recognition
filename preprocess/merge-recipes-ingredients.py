@@ -1,7 +1,6 @@
 import json
 
 def mergeRecipesIngredients(recipes, ingredients):
-   print(recipes[0])
    for recipe in recipes:
       kcal, carbs, fats, proteins = 0, 0, 0, 0
       missing_kcal, missing_carbs, missing_fats, missing_proteins = 0, 0, 0, 0
@@ -33,7 +32,6 @@ def mergeRecipesIngredients(recipes, ingredients):
       recipe["kcal"], recipe["carbs"], recipe["fats"], recipe["proteins"] = kcal, carbs, fats, proteins
       recipe["missing_kcal"], recipe["missing_carbs"], recipe["missing_fats"], recipe["missing_proteins"] = missing_kcal, missing_carbs, missing_fats, missing_proteins
       recipe["mapped_ingredients"] = mapped_ingredients
-   print(recipes[0])
    return recipes
 
 

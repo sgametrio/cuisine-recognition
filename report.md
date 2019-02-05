@@ -28,6 +28,9 @@
 
 # Data Technology 
 
+- ingredients-dataset.json: creato dall'api food-database/parser
+  - analizzare i dataset in base alle cose mancanti (mancano kcal, carbs, fat e proteins ad esempio)
+
 - Descrizione delle modalità di scelta e acquisizione delle sorgenti dati e scelta del modello di descrizione del dataset
 - Analisi di almeno 2 dimensioni di qualità e relative metriche dei dataset analizzati singolarmente
 - Processo di integrazione dei dati ed eventuali problemi riscontrati includendo le eterogenità riscontrate
