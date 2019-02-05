@@ -3,13 +3,14 @@
 
 # Helpers function
 source("helpers.r")
+
 # Configuration variables
 source("config.r")
 
 # Packages manager
 source("packages.r")
 
-using("plyr", "tm", "caret", "pROC", "mlbench", "tictoc", "rpart", "ROCR", "jsonlite")
+using("plyr", "tm", "e1071", "caret", "pROC", "mlbench", "tictoc", "ROCR", "jsonlite")
 
 set.seed(314)    # Set seed for reproducible results
 
@@ -36,18 +37,19 @@ dataset = fromCleanedRecipes(recipes)
 #dataset = cbind(cuisine = recipes$cuisine, dataset)
 
 ##### FREE MEMORY
-remove(ingredients, lastLength, regexes, toMatch, preproc_dataset, corpus, dtm)
+remove(ingredients, lastLength, recipes, regexes, toMatch, preproc_dataset, corpus, dtm)
 gc()
 
 ###### ZERO MEAN SCALE
 if (zero_mean) {
   tic("zero mean scaling")
-  dataset[, 2:ncol(dataset)] = scale(dataset[, 2:ncol(dataset)])
+  dataset[, 2:5] = scale(dataset[, 2:5])
   toc()
 }
 
 ###### FEATURE SELECTION
 if (feature_selection) {
+  cuisine_tmp = dataset$cuisine
   tic("feature selection")
   # remove cuisine column for correlation
   correlationMatrix = cor(subset(dataset, select = -c(cuisine)))
@@ -56,6 +58,7 @@ if (feature_selection) {
   # Remove highly correlated features
   dataset = dataset[,-highlyCorrelated]
   toc()
+  dataset = cbind(cuisine=cuisine_tmp, dataset[, !(names(dataset) == "cuisine")])
   ##### FREE MEMORY
   remove(correlationMatrix, highlyCorrelated)
   gc()
@@ -69,9 +72,17 @@ if (do_balance) {
 }
 
 ###### PLOTS SECTION
-#plot(dataset$cuisine) # See distribution of cuisines TODO: too much biases in dataset (see italian and mexican)
-#cuisines = dataset$cuisine
-#barplot(prop.table(table(cuisines)), las=2, cex.names=.9)
+# plot(dataset$cuisine) # See distribution of cuisines TODO: too much biases in dataset (see italian and mexican)
+# cuisines = dataset$cuisine
+# barplot(prop.table(table(cuisines)), las=2, cex.names=.9)
+# freq = sort(colSums(as.matrix(dtm)), decreasing = T) # Words frequencies
+# wf = data.frame(word=names(freq), freq=freq) # Data frame of frequencies
+# Plot words frequenices greater than 2500
+# hist = ggplot(subset(wf, freq > 2500), aes(x = reorder(word, -freq), y = freq)) +
+#        geom_bar(stat = "identity") +
+#        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+# Print wordcloud
+# wc = wordcloud(names(freq), freq, min.freq=500)
 
 
 # TODO: da commentare
@@ -116,18 +127,20 @@ if (k_fold) {
   dataset = dataset[sample(nrow(dataset)),]
   #Create num_fold equally size folds
   folds = cut(seq(1, nrow(dataset)), breaks = num_fold, labels=FALSE)
-  measures = data.frame(precision = numeric(0), recall = numeric(0), fmeasure = numeric(0))
+  results = vector(mode = "list", length = num_fold)
   #Perform num_fold cross validation
-  for(i in 1:1){
+  for(i in 1:num_fold){
     #Segement data by fold 
     testIndexes = which(folds == i, arr.ind=TRUE)
     test = dataset[testIndexes, ]
     train = dataset[-testIndexes, ]
-    fit = train(cuisine ~., train, method = toString(model))
-    predictions = predict(fit, test)
+    fit = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", probability = TRUE)
+    predictions = predict(fit, newdata = test, probability = TRUE)
     # correct_count = sum(predictions == dataset[ind == i,]$cuisine)
     # accuracies = append(correct_count / nrow(dataset[ind ==i,]), accuracies)
     result = confusionMatrix(data = predictions, reference = test$cuisine, mode="prec_recall")
+    # Saving statistics to a list (we can iterate through this using lapply)
+    results[[i]] = list(overall=as.data.frame(as.matrix(result, what = "overall")), classes=as.data.frame(as.matrix(result, what = "classes")))
     gc()
   }
 }

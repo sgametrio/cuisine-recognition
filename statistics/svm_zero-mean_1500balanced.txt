@@ -1,0 +1,4 @@
+            used  (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   2839855 151.7    6821750  364.4   6821750  364.4
+Vcells 101091462 771.3  342700429 2614.6 655528509 5001.3
+zero mean scaling: 0.016 sec elapsed
