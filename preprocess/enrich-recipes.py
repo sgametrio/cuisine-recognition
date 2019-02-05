@@ -13,7 +13,7 @@ def getIngredientsInfo(ingredient):
       "nutrition-type": "logging",
       "ingr": ingredient,
       "app_id": "72a9739f",
-      "app_key": "82fe3d90684ec3aecc4b29846cf445d9"
+      "app_key": "dd10989037b18ac8fdf2cb825c672ce9"
    }
    headers = {
       "Accept": "application/json",
