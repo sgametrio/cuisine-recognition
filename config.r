@@ -12,7 +12,7 @@ dataset_file = "dataset/cleaned-dataset.json"
 # naiveBayes = naive bayes
 # rpart = random forest
 model = "svm"
-
+target = "continent" # Possible values [continent, cuisine]
 
 # Output filename based on config variables. Leave this at the end of config file
 filename = toString(model)
