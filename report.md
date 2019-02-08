@@ -9,6 +9,8 @@
     Spiegare perchè abbiamo ridotto le ricette italiane, messicane, etc... (perchè) e di quanto
     Ridotte fino a 2000 ricette per tipo di cucina e plottare anche quella roba lì
 
+  - 
+
 - 10-fold cross validation (controllare varianza per vedere se è un buon modello o meno)
 
   - Links:
@@ -23,8 +25,12 @@
 
 - Feature selection
 
+  - Visualizzare attributi correlati fra loro
   - https://machinelearningmastery.com/feature-selection-with-the-caret-r-package/
-  - 
+
+- Perchè SVM? gli altri modelli?
+
+  - https://www.quora.com/What-is-the-intuition-behind-the-Cost-and-Gamma-parameters-in-SVM
 
 # Data Technology 
 

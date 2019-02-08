@@ -53,3 +53,11 @@ makeReadable = function(ids) {
     }
   }))
 }
+
+featureSelection = function (dataset, cutoff) {
+  subset = subset(dataset, select = -c(cuisine))
+  correlation_matrix = cor(subset)
+  highly_correlated_features = findCorrelation(correlation_matrix, cutoff=cutoff)
+  # Remove highly_correlated_features because gives no information
+  dataset[, -highly_correlated_features]
+}
