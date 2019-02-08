@@ -6,25 +6,28 @@ using("tm")
 fromCleanedRecipes = function (recipes) {
   corpus = VCorpus(VectorSource(recipes$mapped_ingredients))
   dataset = fromCorpus(corpus)
+  # colnames(dataset)[colnames(dataset) == 'fats'] = 'fatss' # to avoid duplicate name fats
   dataset = addFeatures(dataset, recipes)
-  cbind(cuisine = recipes$cuisine, dataset)
+  dataset = cbind(cuisine = recipes$cuisine, dataset)
+  colnames(dataset) = makeReadable(colnames(dataset))
+  dataset
 }
 
 fromRawRecipes = function (recipes) {
   corpus = VCorpus(VectorSource(recipes$ingredients))
-  corpus = tm_map(corpus, removeWords, stopwords())
-  corpus = tm_map(corpus, removePunctuation)
-  corpus = tm_map(corpus, stripWhitespace)
   dataset = fromCorpus(corpus)
   colnames(dataset)[colnames(dataset) == 'fats'] = 'fatss' # to avoid duplicate name fats
   dataset = addFeatures(dataset, recipes)
-  cbind(cuisine = recipes$cuisine, dataset)
+  dataset = cbind(cuisine = recipes$cuisine, dataset)
+  colnames(dataset) = makeReadable(colnames(dataset))
 }
 
 fromCorpus = function (corpus) {
+  # corpus = tm_map(corpus, removeWords, stopwords())
+  # corpus = tm_map(corpus, removePunctuation)
+  # corpus = tm_map(corpus, stripWhitespace)
   dtm = DocumentTermMatrix(corpus)
   dataset = as.data.frame(as.matrix(dtm))
-  dataset
 }
 
 addFeatures = function(dataset, recipes) {
@@ -34,6 +37,19 @@ addFeatures = function(dataset, recipes) {
   dataset = cbind(fats = recipes$fats, dataset)
   dataset = cbind(carbs = recipes$carbs, dataset)
   # Scale attributes
-  dataset[, cols] = scale(dataset[, cols])
+  # dataset[, cols] = scale(dataset[, cols])
   dataset
+}
+
+# Change ingredients ids with their original mapping name for readability purpose
+makeReadable = function(ids) {
+  mappings = fromJSON("dataset/ingredients-linkage.json")
+  unlist(lapply(ids, function(x) {
+    mapped = mappings$original[which(mappings$mapped == x)];
+    if (length(mapped) > 0) {
+      mapped[which.min(lapply(str_split(mapped, " "), length))]
+    } else {
+      x
+    }
+  }))
 }
