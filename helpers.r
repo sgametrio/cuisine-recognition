@@ -37,7 +37,7 @@ addFeatures = function(dataset, recipes) {
   dataset = cbind(fats = recipes$fats, dataset)
   dataset = cbind(carbs = recipes$carbs, dataset)
   # Scale attributes
-  # dataset[, cols] = scale(dataset[, cols])
+  dataset[, cols] = scale(dataset[, cols])
   dataset
 }
 

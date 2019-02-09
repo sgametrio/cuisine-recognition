@@ -30,20 +30,20 @@ folds = cut(seq(1, nrow(dataset)), breaks = num_fold, labels=FALSE)
 results = vector(mode = "list", length = num_fold)
 ### PARAMETER LIST ###
 cost <- 10^(2:4)
-gamma <- 10^(-2:2)
-parms <- expand.grid(cost = cost, gamma = gamma)
+#gamma <- 10^(-2:2)
+parms <- expand.grid(cost = cost)
 ### LOOP THROUGH PARAMETER VALUES ###
 result <- foreach(i = 1:nrow(parms), .combine = rbind) %do% {
   c <- parms[i, ]$cost
-  g <- parms[i, ]$gamma
+  #g <- parms[i, ]$gamma
   ### K-FOLD VALIDATION ###
   out <- foreach(j = 1:max(folds), .combine = rbind, .inorder = FALSE) %dopar% {
     testIndexes = which(folds == i, arr.ind=TRUE)
     test = dataset[testIndexes, ]
     train = dataset[-testIndexes, ]
-    mdl = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear",cost = c, gamma = g, probability = TRUE, scale = FALSE)
+    mdl = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", cost = c, probability = TRUE, scale = FALSE)
     pred = predict(mdl, test, decision.values = TRUE, probability = TRUE)
-    data.frame(y = test$DEFAULT, prob = attributes(pred)$probabilities[, 2])
+    data.frame(y = test$cuisine, prob = attributes(pred)$probabilities[, 2])
     gc()
   }
   ### CALCULATE SVM PERFORMANCE ###
