@@ -62,7 +62,7 @@ def main():
       integrated_recipe["kcal"] = kcal / recipe_ingredients_number
       integrated_recipe["carbs"] = carbs / recipe_ingredients_number
       integrated_recipe["fats"] = fats / recipe_ingredients_number
-      integrated_recipe["proteins"] = kcal / recipe_ingredients_number
+      integrated_recipe["proteins"] = proteins / recipe_ingredients_number
       integrated_recipes.append(integrated_recipe)
       i += 1
       print(i)
