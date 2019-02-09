@@ -135,7 +135,7 @@ if (k_fold) {
     testIndexes = which(folds == fold, arr.ind=TRUE)
     test = dataset[testIndexes, ]
     train = dataset[-testIndexes, ]
-    fit = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
+    #fit = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
     predictions = predict(fit, newdata = test, probability = TRUE)
     # correct_count = sum(predictions == dataset[ind == i,]$cuisine)
     # accuracies = append(correct_count / nrow(dataset[ind ==i,]), accuracies)
@@ -154,11 +154,11 @@ if (k_fold) {
                           rocPerClass=as.data.frame(rocPerClass)
                       )
     # Print to file
-    results[[fold]]$overall
-    results[[fold]]$classes
-    paste("Overall ROC: ", results[[fold]]$roc)
-    paste("ROC per class: ")
-    results[[fold]]$rocPerClass
+    print(results[[fold]]$overall)
+    print(results[[fold]]$classes)
+    print(paste("Overall ROC: ", results[[fold]]$roc))
+    print(paste("ROC per class: "))
+    print(results[[fold]]$rocPerClass)
     gc()
   }
 } else {
