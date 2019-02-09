@@ -130,6 +130,7 @@ if (k_fold) {
   results = vector(mode = "list", length = num_fold)
   #Perform num_fold cross validation
   for(fold in 1:num_fold){
+    print(paste("Fold: ", toString(fold)))
     #Segement data by fold 
     testIndexes = which(folds == fold, arr.ind=TRUE)
     test = dataset[testIndexes, ]
@@ -140,18 +141,24 @@ if (k_fold) {
     # accuracies = append(correct_count / nrow(dataset[ind ==i,]), accuracies)
     confMat = confusionMatrix(data = predictions, reference = test$cuisine, mode="prec_recall")
     # Saving statistics to a list (we can iterate through this using lapply)
-    rocPerClass = vector("list", 20)
+    rocPerClass = matrix(nrow = 20, ncol = 1, dimnames = list(levels(dataset$cuisine), c("roc")))
     i = 1
     for (cuisine in levels(dataset$cuisine)) {
-      rocPerClass[i] = multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, cuisine])$auc
+      rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
+      i = i + 1
     }
     results[[fold]] = list(overall=as.data.frame(as.matrix(confMat, what = "overall")), 
-                           classes=as.data.frame(as.matrix(confMat, what = "classes")),
-                           # Overall roc in i-th fold
-                           roc=multiclass.roc(test$cuisine, attr(predictions, "probalities")[, 2])$auc,
-                           rocPerClass=rocPerClass
+                          classes=as.data.frame(as.matrix(confMat, what = "classes")),
+                          # Overall roc in i-th fold
+                          roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
+                          rocPerClass=as.data.frame(rocPerClass)
                       )
-    print(fold)
+    # Print to file
+    results[[fold]]$overall
+    results[[fold]]$classes
+    paste("Overall ROC: ", results[[fold]]$roc)
+    paste("ROC per class: ")
+    results[[fold]]$rocPerClass
     gc()
   }
 } else {
@@ -161,20 +168,27 @@ if (k_fold) {
   train = dataset[tindex,]   # Create training set
   test = dataset[-tindex,]   # Create test set
   fit = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
-  predictions = predict(fit, newdata = test, probability = TRUE)
+  predictions = predict(fit, test, probability = TRUE)
   confMat = confusionMatrix(data = predictions, reference = test$cuisine, mode="prec_recall")
   # Saving statistics to a list (we can iterate through this using lapply)
-  rocPerClass = vector("list", 20)
+  rocPerClass = matrix(nrow = 20, ncol = 1, dimnames = list(levels(dataset$cuisine), c("roc")))
   i = 1
   for (cuisine in levels(dataset$cuisine)) {
-    rocPerClass[i] = multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, cuisine])$auc
+    rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
+    i = i + 1
   }
-  results[[fold]] = list(overall=as.data.frame(as.matrix(confMat, what = "overall")), 
+  results = list(overall=as.data.frame(as.matrix(confMat, what = "overall")), 
                          classes=as.data.frame(as.matrix(confMat, what = "classes")),
                          # Overall roc in i-th fold
-                         roc=multiclass.roc(test$cuisine, attr(predictions, "probalities")[, 2])$auc,
-                         rocPerClass=rocPerClass
-  )    
+                         roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
+                         rocPerClass=as.data.frame(rocPerClass)
+  ) 
+  # Print to file
+  results$overall
+  results$classes
+  paste("Overall ROC: ", results$roc)
+  paste("ROC per class: ")
+  results$rocPerClass
 }
 
 ###### Analyzing results

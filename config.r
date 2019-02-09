@@ -1,9 +1,9 @@
 # Do not comment variables, instead change their values
-zero_mean = TRUE
+zero_mean = FALSE
 feature_selection = FALSE
-do_balance = TRUE
+do_balance = FALSE
 roc = FALSE
-k_fold = TRUE
+k_fold = FALSE
 max_recipes = 500
 cut_off = 0.75
 num_fold = 10
