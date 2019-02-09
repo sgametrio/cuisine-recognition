@@ -1,10 +1,12 @@
+# Get 70 unmatched ingredients stats
+source("70_unmatched.r")
 # Extract functions to helpers.r
 source("helpers.r")
 # Read configuration variables
 source("config.r")
 # Packages manager
 source("packages.r")
-using("plyr", "jsonlite", "e1071", "pROC", "mlbench", "tictoc", "ROCR", "caret", "DataExplorer", "corrplot")
+using("plyr", "stringr","jsonlite", "e1071", "pROC", "mlbench", "tictoc", "ROCR", "caret", "DataExplorer", "corrplot")
 
 ### Building training set from json
 recipes = fromJSON("dataset/integrated-dataset.json")
@@ -44,6 +46,7 @@ per_cuisine_recipe_ingredients = aggregate(. ~ cuisine, data = dataset_without_n
 plot_correlation(per_cuisine_recipe_nutrients[, nutrients]) # Too much correlation on AVERAGE nutrients per cuisine
 plot_correlation(unscaled[, nutrients]) # Too much correlation on nutrients
 plot_correlation(sub) # correlation between cuisines and nutrients
+plot_correlation()
 corrMatrix = cor(per_cuisine_recipe_nutrients[, nutrients])
 corrplot(corrMatrix, type = "upper", tl.col = "black", tl.srt = 30,addCoef.col = "white")
 barplot(per_cuisine_recipe_nutrients$kcal, names.arg = per_cuisine_recipe_nutrients$cuisine, col = palette, main="100g Recipe calories by cuisine")
