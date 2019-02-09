@@ -46,7 +46,14 @@ per_cuisine_recipe_ingredients = aggregate(. ~ cuisine, data = dataset_without_n
 plot_correlation(per_cuisine_recipe_nutrients[, nutrients]) # Too much correlation on AVERAGE nutrients per cuisine
 plot_correlation(unscaled[, nutrients]) # Too much correlation on nutrients
 plot_correlation(sub) # correlation between cuisines and nutrients
-plot_correlation()
+
+# Splitted unmatched ingredients
+splitted_ingrs = unlist(Reduce(append, strsplit(ingrs, " ")))
+# Plot correaltion between them
+plot_correlation(dataset_without_nutrients[, colnames(dataset_without_nutrients) %in% splitted_ingrs])
+# Plot correaltion between them and cuisines continent
+plot_correlation(dataset_without_nutrients[, colnames(dataset_without_nutrients) %in% c("cuisine", splitted_ingrs)])
+
 corrMatrix = cor(per_cuisine_recipe_nutrients[, nutrients])
 corrplot(corrMatrix, type = "upper", tl.col = "black", tl.srt = 30,addCoef.col = "white")
 barplot(per_cuisine_recipe_nutrients$kcal, names.arg = per_cuisine_recipe_nutrients$cuisine, col = palette, main="100g Recipe calories by cuisine")

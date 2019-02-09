@@ -40,4 +40,3 @@ labels = distr$Var1
 mp = barplot(distr$Freq, axes = FALSE, axisnames = FALSE, ylim=c(0,40), main = "Unmatched ingredients per continent")
 text(mp, par("usr")[3], labels = labels, srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=.9)
 axis(2)
-
