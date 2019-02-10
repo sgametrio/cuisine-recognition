@@ -60,4 +60,4 @@ barplot(per_cuisine_recipe_nutrients$kcal, names.arg = per_cuisine_recipe_nutrie
 barplot(per_cuisine_recipe_nutrients$proteins, names.arg = per_cuisine_recipe_nutrients$cuisine, col = palette, main="100g Recipe proteins by cuisine")
 # TODO: analyze ingredients counts
 barplot(per_cuisine_recipe_ingredients$tomatoes, names.arg = levels(continent), main = "Tomatoes distribution by cuisine", col = palette)
-which(dataset_without_nutrients == max(dataset_without_nutrients, na.rm = TRUE), arr.ind = TRUE)
+which(dataset_without_nutrients == max(dataset_without_nutrients, na.rm = TRUE))
