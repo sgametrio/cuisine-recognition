@@ -10,12 +10,12 @@ source("config.r")
 # Packages manager
 source("packages.r")
 
-using("plyr", "e1071", "stringr", "tm", "gmum.r", "caret", "pROC", "mlbench", "tictoc", "ROCR", "jsonlite")
+using("plyr", "BBmisc","e1071", "stringr", "tm", "gmum.r", "caret", "pROC", "mlbench", "tictoc", "ROCR", "jsonlite")
 
 set.seed(314)    # Set seed for reproducible results
 
 ###### Redirect output to file
-sink(paste("statistics/", filename, sep = ""))
+sink(paste("statistics/", "svm2.txt", sep = ""))
 
 ###### BUILDING DOCUMENT TERM MATRIX DATASET
 # dataset = read.csv2(dataset_file)
@@ -135,7 +135,7 @@ if (k_fold) {
     testIndexes = which(folds == fold, arr.ind=TRUE)
     test = dataset[testIndexes, ]
     train = dataset[-testIndexes, ]
-    #fit = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
+    fit = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
     predictions = predict(fit, newdata = test, probability = TRUE)
     # correct_count = sum(predictions == dataset[ind == i,]$cuisine)
     # accuracies = append(correct_count / nrow(dataset[ind ==i,]), accuracies)
@@ -147,14 +147,19 @@ if (k_fold) {
       rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
       i = i + 1
     }
-    results[[fold]] = list(overall=as.data.frame(as.matrix(confMat, what = "overall")), 
-                          classes=as.data.frame(as.matrix(confMat, what = "classes")),
-                          # Overall roc in i-th fold
-                          roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
-                          rocPerClass=as.data.frame(rocPerClass)
+    results[[fold]] = list(confMat=confMat$table,
+                           overall=as.data.frame(as.matrix(confMat, what = "overall")), 
+                           classes=as.data.frame(as.matrix(confMat, what = "classes")),
+                           # Overall roc in i-th fold
+                           roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
+                           rocPerClass=as.data.frame(rocPerClass)
                       )
     # Print to file
+    print("Confusion matrix")
+    print(results[[fold]]$confMat)
+    print("Overall stats")
     print(results[[fold]]$overall)
+    print("Class stats")
     print(results[[fold]]$classes)
     print(paste("Overall ROC: ", results[[fold]]$roc))
     print(paste("ROC per class: "))
@@ -177,18 +182,23 @@ if (k_fold) {
     rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
     i = i + 1
   }
-  results = list(overall=as.data.frame(as.matrix(confMat, what = "overall")), 
-                         classes=as.data.frame(as.matrix(confMat, what = "classes")),
-                         # Overall roc in i-th fold
-                         roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
-                         rocPerClass=as.data.frame(rocPerClass)
+  results = list(confMat=confMat$table,
+                 overall=as.data.frame(as.matrix(confMat, what = "overall")), 
+                 classes=as.data.frame(as.matrix(confMat, what = "classes")),
+                 # Overall roc in i-th fold
+                 roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
+                 rocPerClass=as.data.frame(rocPerClass)
   ) 
   # Print to file
-  results$overall
-  results$classes
-  paste("Overall ROC: ", results$roc)
-  paste("ROC per class: ")
-  results$rocPerClass
+  print("Confusion matrix")
+  print(results$confMat)
+  print("Overall stats")
+  print(results$overall)
+  print("Class stats")
+  print(results$classes)
+  print(paste("Overall ROC: ", results$roc))
+  print(paste("ROC per class: "))
+  print(results$rocPerClass)
 }
 
 ###### Analyzing results

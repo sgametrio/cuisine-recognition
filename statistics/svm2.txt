@@ -1,0 +1,182 @@
+[1] "Confusion matrix"
+              Reference
+Prediction     brazilian british cajun_creole chinese filipino french
+  brazilian           49       0            0       0        3      1
+  british              0      74            4       3        0      6
+  cajun_creole         2       2          271       1        2      9
+  chinese              1       1            1     543       30      4
+  filipino             5       1            0       8      100      1
+  french               5      29           13       3        3    418
+  greek                1       1            1       2        0      8
+  indian               1       6            0       1        2      5
+  irish                0      12            0       0        0      7
+  italian              7      21           19      11        6    166
+  jamaican             3       0            0       0        0      2
+  japanese             0       0            2      15        3      3
+  korean               0       0            1      17        0      0
+  mexican             18       1           15       8       13      7
+  moroccan             0       0            0       1        0      1
+  russian              0       4            0       1        3      2
+  southern_us         12      34           71       7       13     51
+  spanish              8       0            1       0        4     10
+  thai                 1       1            0      12        6      0
+  vietnamese           0       0            0       9        4      0
+              Reference
+Prediction     greek indian irish italian jamaican japanese korean
+  brazilian        0      1     0       1        1        0      0
+  british          1      4    15       9        2        0      0
+  cajun_creole     2      0     0       4        2        0      0
+  chinese          1      7     0       3        3       52     31
+  filipino         0      1     0       1        3        3      0
+  french          12      7    22      85        4        7      1
+  greek          172     10     0      17        1        0      0
+  indian           6    640     2       7        4       21      0
+  irish            1      0    76       6        1        1      0
+  italian         69     10     7    1755        3       12      3
+  jamaican         0      2     2       1       97        0      0
+  japanese         0     13     1       0        2      237     11
+  korean           0      4     1       1        0        4    147
+  mexican          2     10     2      23        4        5      3
+  moroccan         5      9     0       3        0        0      0
+  russian          2      1     3       5        1        0      0
+  southern_us      7      6    28      42       13       10      3
+  spanish          7      0     1      21        1        0      1
+  thai             0      9     0       0        1        4      1
+  vietnamese       0      0     0       1        0        4      3
+              Reference
+Prediction     mexican moroccan russian southern_us spanish thai
+  brazilian          4        0       0           4       2    3
+  british            0        0       4          19       4    1
+  cajun_creole       3        1       2          32       3    0
+  chinese            8        0       1           5       0   23
+  filipino           3        0       1           1       6    7
+  french            12        8      22          31      19    0
+  greek              6        3       3           4       4    2
+  indian             7       13       3           5       2   11
+  irish              0        0       4           4       1    0
+  italian           23       12      12          68      53    2
+  jamaican           3        0       0           2       1    0
+  japanese           1        0       0           1       0    3
+  korean             1        0       0           2       0    2
+  mexican         1434        6       4          28      36   11
+  moroccan           1      148       2           5       2    0
+  russian            0        0      43           1       2    0
+  southern_us       47        6      22         894      14    4
+  spanish           13        4       3           9      92    0
+  thai               3        1       0           1       0  288
+  vietnamese         0        0       0           0       0   25
+              Reference
+Prediction     vietnamese
+  brazilian             1
+  british               0
+  cajun_creole          0
+  chinese              25
+  filipino              5
+  french                2
+  greek                 0
+  indian                1
+  irish                 0
+  italian               6
+  jamaican              0
+  japanese              4
+  korean                3
+  mexican               2
+  moroccan              0
+  russian               0
+  southern_us           3
+  spanish               0
+  thai                 30
+  vietnamese          119
+[1] "Overall stats"
+                      V1
+Accuracy       0.7639783
+Kappa          0.7353385
+AccuracyLower  0.7555053
+AccuracyUpper  0.7722964
+AccuracyNull   0.1996179
+AccuracyPValue 0.0000000
+McnemarPValue        NaN
+[1] "Class stats"
+                       brazilian     british cajun_creole    chinese
+Sensitivity          0.433628319 0.395721925   0.67919799 0.84579439
+Specificity          0.997863900 0.992620683   0.99319015 0.97892926
+Pos Pred Value       0.700000000 0.506849315   0.80654762 0.73477673
+Neg Pred Value       0.993518331 0.988467034   0.98667777 0.98924498
+Precision            0.700000000 0.506849315   0.80654762 0.73477673
+Recall               0.433628319 0.395721925   0.67919799 0.84579439
+F1                   0.535519126 0.444444444   0.73741497 0.78638668
+Prevalence           0.011363636 0.018805310   0.04012470 0.06456154
+Detection Rate       0.004927595 0.007441673   0.02725261 0.05460579
+Detection Prevalence 0.007039421 0.014682220   0.03378922 0.07431617
+Balanced Accuracy    0.715746109 0.694171304   0.83619407 0.91236183
+                       filipino     french      greek     indian
+Sensitivity          0.52083333 0.59629101 0.59930314 0.87193460
+Specificity          0.99528302 0.96916586 0.99347623 0.98946797
+Pos Pred Value       0.68493151 0.59459459 0.73191489 0.86838535
+Neg Pred Value       0.99061033 0.96937561 0.98815532 0.98979038
+Precision            0.68493151 0.59459459 0.73191489 0.86838535
+Recall               0.52083333 0.59629101 0.59930314 0.87193460
+F1                   0.59171598 0.59544160 0.65900383 0.87015636
+Prevalence           0.01930813 0.07049477 0.02886163 0.07381335
+Detection Rate       0.01005632 0.04203540 0.01729686 0.06436042
+Detection Prevalence 0.01468222 0.07069590 0.02363234 0.07411504
+Balanced Accuracy    0.75805818 0.78272843 0.79638969 0.93070129
+                          irish   italian    jamaican   japanese
+Sensitivity          0.47500000 0.8841310 0.678321678 0.65833333
+Specificity          0.99621832 0.9359216 0.998367514 0.99384391
+Pos Pred Value       0.67256637 0.7748344 0.858407080 0.80067568
+Neg Pred Value       0.99145560 0.9700482 0.995320924 0.98725124
+Precision            0.67256637 0.7748344 0.858407080 0.80067568
+Recall               0.47500000 0.8841310 0.678321678 0.65833333
+F1                   0.55677656 0.8258824 0.757812500 0.72256098
+Prevalence           0.01609010 0.1996179 0.014380531 0.03620274
+Detection Rate       0.00764280 0.1764883 0.009754626 0.02383347
+Detection Prevalence 0.01136364 0.2277755 0.011363636 0.02976669
+Balanced Accuracy    0.73560916 0.9100263 0.838344596 0.82608862
+                         korean   mexican   moroccan     russian
+Sensitivity          0.72058824 0.9139579 0.73267327 0.341269841
+Specificity          0.99630390 0.9763582 0.99702320 0.997453657
+Pos Pred Value       0.80327869 0.8786765 0.83615819 0.632352941
+Neg Pred Value       0.99416043 0.9837584 0.99447118 0.991595788
+Precision            0.80327869 0.8786765 0.83615819 0.632352941
+Recall               0.72058824 0.9139579 0.73267327 0.341269841
+F1                   0.75968992 0.8959700 0.78100264 0.443298969
+Prevalence           0.02051488 0.1577836 0.02031376 0.012670957
+Detection Rate       0.01478278 0.1442076 0.01488335 0.004324216
+Detection Prevalence 0.01840306 0.1641191 0.01779968 0.006838294
+Balanced Accuracy    0.85844607 0.9451581 0.86484823 0.669361749
+                     southern_us    spanish       thai vietnamese
+Sensitivity           0.80107527 0.38174274 0.75392670 0.59203980
+Specificity           0.95548256 0.99144594 0.99267936 0.99527866
+Pos Pred Value        0.69463869 0.52571429 0.80446927 0.72121212
+Neg Pred Value        0.97435601 0.98474767 0.99019403 0.99161468
+Precision             0.69463869 0.52571429 0.80446927 0.72121212
+Recall                0.80107527 0.38174274 0.75392670 0.59203980
+F1                    0.74406991 0.44230769 0.77837838 0.65027322
+Prevalence            0.11222848 0.02423572 0.03841512 0.02021319
+Detection Rate        0.08990346 0.00925181 0.02896219 0.01196702
+Detection Prevalence  0.12942478 0.01759855 0.03600161 0.01659292
+Balanced Accuracy     0.87827891 0.68659434 0.87330303 0.79365923
+[1] "Overall ROC:  0.740347359774552"
+[1] "ROC per class: "
+                   roc
+brazilian    0.6758483
+british      0.7227720
+cajun_creole 0.7127599
+chinese      0.7319862
+filipino     0.6730703
+french       0.7389591
+greek        0.7107562
+indian       0.6826516
+irish        0.7318966
+italian      0.7403474
+jamaican     0.6835198
+japanese     0.7120717
+korean       0.7122960
+mexican      0.6986508
+moroccan     0.6826785
+russian      0.7015925
+southern_us  0.7305958
+spanish      0.7033296
+thai         0.7284077
+vietnamese   0.7396589
