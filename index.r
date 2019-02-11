@@ -131,7 +131,7 @@ if (k_fold) {
   # Randomly shuffle the dataset
   dataset  = dataset[sample(nrow(dataset)),]
   #Create num_fold equally size folds
-  folds = cut(seq(1, nrow(train)), breaks = num_fold, labels=FALSE)
+  folds = cut(seq(1, nrow(dataset)), breaks = num_fold, labels=FALSE)
   results = vector(mode = "list", length = num_fold)
   #Perform num_fold cross validation
   for(fold in 1:num_fold){
@@ -159,7 +159,6 @@ if (k_fold) {
         main = paste("ROCs in fold ", fold)
       }
       plot(performance(pred, "tpr", "fpr"), add = add, col = colors[i], main = main)
-      rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine == cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
       i = i + 1
     }
     legend("bottomright", 1, legend = levels(test$cuisine), col = colors, lty=1, lwd=1, cex = 0.75, bty = "n")
@@ -219,7 +218,6 @@ if (k_fold) {
       main = "ROCs"
     }
     plot(performance(pred, "tpr", "fpr"), add = add, col = colors[i], main = main)
-    # rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine == cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
     i = i + 1
   }
   legend("bottomright", 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1, cex = 0.75, bty = "n")
