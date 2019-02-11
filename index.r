@@ -129,7 +129,7 @@ if (k_fold) {
   # Colors for plots
   colors = rainbow(length(levels(dataset$cuisine)))
   # Randomly shuffle the dataset
-  #  = dataset[sample(nrow(dataset)),]
+  dataset  = dataset[sample(nrow(dataset)),]
   #Create num_fold equally size folds
   folds = cut(seq(1, nrow(train)), breaks = num_fold, labels=FALSE)
   results = vector(mode = "list", length = num_fold)
