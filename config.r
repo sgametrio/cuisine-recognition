@@ -3,16 +3,16 @@ zero_mean = FALSE
 feature_selection = FALSE
 do_balance = FALSE
 roc = FALSE
-k_fold = TRUE
+k_fold = FALSE
 max_recipes = 500
-cut_off = 0.75
+cut_off = 0.85
 num_fold = 10
 dataset_file = "dataset/cleaned-dataset.json"
 # Available models
 # naiveBayes = naive bayes
 # rpart = random forest
 model = "svm"
-target = "continent" # Possible values [continent, cuisine]
+target = "cuisine" # Possible values [continent, cuisine]
 
 # Output filename based on config variables. Leave this at the end of config file
 filename = toString(model)

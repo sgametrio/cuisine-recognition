@@ -87,7 +87,6 @@ if (do_balance) {
 
 # TODO: da commentare
 if (roc) {
-  if (model == modelsvm) {
     n = nrow(dataset)  # Number of observations
     ntrain = round(n*0.75)  # 75% for training set
     tindex = sample(n, ntrain)   # Create a random index
@@ -115,12 +114,11 @@ if (roc) {
       if (i == 1) {
         add = FALSE
       }
-      plot(perf.tpr.rocr, add = add, main = "One-vs-All ROCs", col = colors, lty=1, lwd=1, cex = 0.75, bty = "n")
+      plot(perf.tpr.rocr, add = add, main = "One-vs-All ROCs", col = colors[i], lty=1, lwd=1, cex = 0.75, bty = "n")
       i = i+1
       gc()
     }
     legend("bottomright", 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1)
-  }
 }
 
 if (k_fold) {

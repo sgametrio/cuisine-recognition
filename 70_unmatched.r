@@ -17,14 +17,14 @@ for (i in seq_along(not_start_food)) {
   }
 }
 
-### Plot distribution per continent
+### Plot distribution per recipes
 distr = as.data.frame(table(expl_data$cuisine[not_mapped]))
 labels = distr$Var1
 mp = barplot(distr$Freq, axes = FALSE, axisnames = FALSE, ylim=c(0,20), main = "Unmatched ingredients per recipes")
 text(mp, par("usr")[3], labels = labels, srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=.9)
 axis(2)
 
-### Plot distribution per cuisine
+### Plot distribution per continent
 asian = c("japanese", "vietnamese", "korean", "thai", "chinese", "filipino", "indian")
 north_american = c("jamaican", "cajun_creole", "mexican")
 south_american = c("southern_us", "brazilian")
