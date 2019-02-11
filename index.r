@@ -15,7 +15,7 @@ using("plyr", "BBmisc", "HandTill2001", "e1071", "stringr", "tm", "caret", "pROC
 set.seed(314)    # Set seed for reproducible results
 
 ###### Redirect output to file
-sink(paste("statistics/", "svm2-10fold.txt", sep = ""))
+sink(paste("statistics/", filename, ep = ""))
 
 ###### BUILDING DOCUMENT TERM MATRIX DATASET
 # dataset = read.csv2(dataset_file)
@@ -139,7 +139,7 @@ if (k_fold) {
     testIndexes = which(folds == fold, arr.ind=TRUE)
     test = dataset[testIndexes, ]
     train = dataset[-testIndexes, ]
-    #fit = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
+    fit = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
     predictions = predict(fit, newdata = test, probability = TRUE)
     # correct_count = sum(predictions == dataset[ind == i,]$cuisine)
     # accuracies = append(correct_count / nrow(dataset[ind ==i,]), accuracies)
@@ -158,7 +158,7 @@ if (k_fold) {
         main = paste("ROCs in fold ", fold)
       }
       plot(performance(pred, "tpr", "fpr"), add = add, col = colors[i], main = main)
-      # rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine == cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
+      rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine == cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
       i = i + 1
     }
     legend("bottomright", 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1, cex = 0.75, bty = "n")
@@ -228,13 +228,15 @@ if (k_fold) {
   print(results$rocPerClass)
 }
 
-if (length(results) == 4) {
+if (!k_fold) {
   overallPerClass = matrix(nrow = 20, ncol = 3, dimnames = list(levels(dataset$cuisine), c("Precision", "Recall", "F1")))
   for (i in 1:20) {
     for (j in 5:7) {
       overallPerClass[i, j-4] = unlist(as.numeric(results$classes[j, i]) )
     }
   }
+  print("Avg accuracy")
+  print(results$overall[1,])
 } else {
   overallPerClass = matrix(nrow = 20, ncol = 3, dimnames = list(levels(dataset$cuisine), c("Precision", "Recall", "F1")))
   for (i in 1:20) {
@@ -242,6 +244,8 @@ if (length(results) == 4) {
       overallPerClass[i, j-4] = mean(unlist(lapply(results, function(x) { as.numeric(x$classes[j, i]) })))
     }
   }
+  print("Avg accuracy")
+  print(mean(sapply(results, function(x) x$overall[1,])))
 }
 
 print("Overall measure per class")
