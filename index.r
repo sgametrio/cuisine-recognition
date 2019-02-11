@@ -259,6 +259,9 @@ if (!k_fold) {
   }
   print("Avg accuracy")
   print(mean(sapply(results, function(x) x$overall[1,])))
+  
+  print("Avg AUC")
+  print(mean(sapply(results, function(x) x$roc)))
 }
 
 print("Overall measure per class")
