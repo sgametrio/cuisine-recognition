@@ -1,6 +1,6 @@
 # Packages manager
 source("packages.r")
-using("tm")
+using("tm", "stringr")
 
 # Build dataset in tabular form from list of recipes
 fromCleanedRecipes = function (recipes) {

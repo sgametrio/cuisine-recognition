@@ -72,3 +72,5 @@ which(dataset_without_nutrients == max(dataset_without_nutrients, na.rm = TRUE),
 #        theme(axis.text.x = element_text(angle = 45, hjust = 1))
 # # Print wordcloud
 # wc = wordcloud(names(freq), freq, min.freq=500)
+
+which(dataset_without_nutrients == max(dataset_without_nutrients, na.rm = TRUE))
