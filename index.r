@@ -242,7 +242,7 @@ if (k_fold) {
 }
 
 if (!k_fold) {
-  overallPerClass = matrix(nrow = 20, ncol = 3, dimnames = list(levels(dataset$cuisine), c("Precision", "Recall", "F1")))
+  overallPerClass = matrix(nrow = 20, ncol = 4, dimnames = list(levels(dataset$cuisine), c("Precision", "Recall", "F1", "AUC")))
   for (i in 1:20) {
     for (j in 5:7) {
       overallPerClass[i, j-4] = unlist(as.numeric(results$classes[j, i]) )
@@ -250,11 +250,15 @@ if (!k_fold) {
   }
   print("Avg accuracy")
   print(results$overall[1,])
+  
+  print("Avg AUC")
+  print(results$roc)
 } else {
-  overallPerClass = matrix(nrow = 20, ncol = 3, dimnames = list(levels(dataset$cuisine), c("Precision", "Recall", "F1")))
+  overallPerClass = matrix(nrow = 20, ncol = 4, dimnames = list(levels(dataset$cuisine), c("Precision", "Recall", "F1", "AUC")))
   for (i in 1:20) {
     for (j in 5:7) {
       overallPerClass[i, j-4] = mean(unlist(lapply(results, function(x) { as.numeric(x$classes[j, i]) })))
+      overallPerClass[i, 4] = mean(unlist(lapply(results, function(x) { as.numeric(x$rocPerClass[i, 1]) })))
     }
   }
   print("Avg accuracy")
