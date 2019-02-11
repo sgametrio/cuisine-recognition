@@ -6,7 +6,7 @@ source("helpers.r")
 source("config.r")
 # Packages manager
 source("packages.r")
-using("plyr", "stringr","jsonlite", "e1071", "pROC", "mlbench", "tictoc", "ROCR", "caret", "DataExplorer", "corrplot")
+using("plyr", "wordcloud","stringr","jsonlite", "e1071", "pROC", "mlbench", "tictoc", "ROCR", "caret", "DataExplorer", "corrplot")
 
 ### Building training set from json
 recipes = fromJSON("dataset/integrated-dataset.json")
@@ -60,4 +60,15 @@ barplot(per_cuisine_recipe_nutrients$kcal, names.arg = per_cuisine_recipe_nutrie
 barplot(per_cuisine_recipe_nutrients$proteins, names.arg = per_cuisine_recipe_nutrients$cuisine, col = palette, main="100g Recipe proteins by cuisine")
 # TODO: analyze ingredients counts
 barplot(per_cuisine_recipe_ingredients$tomatoes, names.arg = levels(continent), main = "Tomatoes distribution by cuisine", col = palette)
+barplot(per_cuisine_recipe_ingredients$eggs, names.arg = levels(continent), main = "Eggs distribution by cuisine", col = palette)
 which(dataset_without_nutrients == max(dataset_without_nutrients, na.rm = TRUE), arr.ind = TRUE)
+
+# # Words
+# freq = sort(colSums(as.matrix(dtm)), decreasing = T) # Words frequencies
+# wf = data.frame(word=names(freq), freq=freq) # Data frame of frequencies
+# # Plot words frequenices greater than 2500
+# hist = ggplot(subset(wf, freq > 2500), aes(x = reorder(word, -freq), y = freq)) +
+#        geom_bar(stat = "identity") +
+#        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+# # Print wordcloud
+# wc = wordcloud(names(freq), freq, min.freq=500)
