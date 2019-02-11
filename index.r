@@ -10,7 +10,7 @@ source("config.r")
 # Packages manager
 source("packages.r")
 
-using("plyr", "BBmisc", "HandTill2001", "e1071", "stringr", "tm", "caret", "pROC", "ROCR", "mlbench", "tictoc", "jsonlite")
+using("plyr", "wordcloud","BBmisc", "HandTill2001", "e1071", "stringr", "tm", "caret", "pROC", "ROCR", "mlbench", "tictoc", "jsonlite")
 
 set.seed(314)    # Set seed for reproducible results
 
@@ -110,16 +110,16 @@ if (roc) {
       rocr_pred.to.roc = rocr_pred.prob[, "1"]
       rocr_pred.rocr = prediction(rocr_pred.to.roc, binary_test$cuisine)
       aucs[i, 1] = unlist(performance(rocr_pred.rocr, measure = "auc", x.measure = "cutoff")@y.values)
-      # perf.tpr.rocr = performance(rocr_pred.rocr, "tpr","fpr")
-      # add = TRUE
-      # if (i == 1) {
-      #   add = FALSE
-      # }
-      # plot(perf.tpr.rocr, main=paste(paste(cuisine, ": ", sep=""),(perf.rocr@y.values)), add = add, col = colors[i])
+      perf.tpr.rocr = performance(rocr_pred.rocr, "tpr","fpr")
+      add = TRUE
+      if (i == 1) {
+        add = FALSE
+      }
+      plot(perf.tpr.rocr, add = add, main = "One-vs-All ROCs", col = colors, lty=1, lwd=1, cex = 0.75, bty = "n")
       i = i+1
       gc()
     }
-    # legend(0.85, 0.92, 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1)
+    legend("bottomright", 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1)
   }
 }
 
@@ -261,6 +261,15 @@ if (!k_fold) {
       overallPerClass[i, 4] = mean(unlist(lapply(results, function(x) { as.numeric(x$rocPerClass[i, 1]) })))
     }
   }
+  
+  overAllConfMat = results[[1]]$confMat
+  for (i in 2:10) {
+    overAllConfMat = overAllConfMat + results[[i]]$confMat
+  }
+  
+  print("Avg conf mat")
+  print(overAllConfMat)
+  
   print("Avg accuracy")
   print(mean(sapply(results, function(x) x$overall[1,])))
   
