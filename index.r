@@ -10,7 +10,7 @@ source("config.r")
 # Packages manager
 source("packages.r")
 
-using("plyr", "BBmisc","e1071", "stringr", "tm", "gmum.r", "caret", "pROC", "mlbench", "tictoc", "ROCR", "jsonlite")
+using("plyr", "BBmisc", "HandTill2001", "e1071", "stringr", "tm", "caret", "pROC", "mlbench", "tictoc", "jsonlite")
 
 set.seed(314)    # Set seed for reproducible results
 
@@ -86,40 +86,42 @@ if (do_balance) {
 
 
 # TODO: da commentare
-# if (roc) {
-#   if (model == modelsvm) {
-#     n = nrow(dataset)  # Number of observations
-#     ntrain = round(n*0.75)  # 75% for training set
-#     tindex = sample(n, ntrain)   # Create a random index
-#     train = dataset[tindex,]   # Create training set
-#     test = dataset[-tindex,]   # Create test set
-#     i = 1
-#     # Compute N binary SVMs and respective ROCs
-#     colors = rainbow(length(levels(dataset$cuisine)))
-#     for (cuisine in levels(dataset$cuisine)) {
-#       binary_test = test
-#       binary_train = train
-#       levels(binary_test$cuisine)[levels(binary_test$cuisine) != cuisine] = "0"
-#       levels(binary_test$cuisine)[levels(binary_test$cuisine) == cuisine] = "1"
-#       levels(binary_train$cuisine)[levels(binary_train$cuisine) != cuisine] = "0"
-#       levels(binary_train$cuisine)[levels(binary_train$cuisine) == cuisine] = "1"
-#       svm.rocr.model = svm(cuisine ~ ., data = binary_train, method = "C-classification", kernel = "linear", probability = TRUE)
-#       rocr_pred = predict(svm.rocr.model, binary_test, probability = TRUE)
-#       rocr_pred.prob = attr(rocr_pred, "probabilities")
-#       rocr_pred.to.roc = rocr_pred.prob[, "1"]
-#       rocr_pred.rocr = prediction(rocr_pred.to.roc, binary_test$cuisine)
-#       perf.rocr = performance(rocr_pred.rocr, measure = "auc", x.measure = "cutoff")
-#       perf.tpr.rocr = performance(rocr_pred.rocr, "tpr","fpr")
-#       add = TRUE
-#       if (i == 1) {
-#         add = FALSE
-#       }
-#       plot(perf.tpr.rocr, main=paste(paste(cuisine, ": ", sep=""),(perf.rocr@y.values)), add = add, col = colors[i])
-#       i = i+1
-#     }
-#     legend(0.85, 0.92, 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1)
-#   }
-# }
+if (roc) {
+  if (model == modelsvm) {
+    n = nrow(dataset)  # Number of observations
+    ntrain = round(n*0.75)  # 75% for training set
+    tindex = sample(n, ntrain)   # Create a random index
+    train = dataset[tindex,]   # Create training set
+    test = dataset[-tindex,]   # Create test set
+    i = 1
+    # Compute N binary SVMs and respective ROCs
+    colors = rainbow(length(levels(dataset$cuisine)))
+    aucs = matrix(nrow = 20, ncol = 1, dimnames = list(levels(dataset$cuisine), c("roc")))
+    for (cuisine in levels(dataset$cuisine)) {
+      binary_test = test
+      binary_train = train
+      levels(binary_test$cuisine)[levels(binary_test$cuisine) != cuisine] = "0"
+      levels(binary_test$cuisine)[levels(binary_test$cuisine) == cuisine] = "1"
+      levels(binary_train$cuisine)[levels(binary_train$cuisine) != cuisine] = "0"
+      levels(binary_train$cuisine)[levels(binary_train$cuisine) == cuisine] = "1"
+      svm.rocr.model = svm(cuisine ~ ., data = binary_train, method = "C-classification", kernel = "linear", probability = TRUE)
+      rocr_pred = predict(svm.rocr.model, binary_test, probability = TRUE)
+      rocr_pred.prob = attr(rocr_pred, "probabilities")
+      rocr_pred.to.roc = rocr_pred.prob[, "1"]
+      rocr_pred.rocr = prediction(rocr_pred.to.roc, binary_test$cuisine)
+      aucs[i, 1] = unlist(performance(rocr_pred.rocr, measure = "auc", x.measure = "cutoff")@y.values)
+      # perf.tpr.rocr = performance(rocr_pred.rocr, "tpr","fpr")
+      # add = TRUE
+      # if (i == 1) {
+      #   add = FALSE
+      # }
+      # plot(perf.tpr.rocr, main=paste(paste(cuisine, ": ", sep=""),(perf.rocr@y.values)), add = add, col = colors[i])
+      i = i+1
+      gc()
+    }
+    # legend(0.85, 0.92, 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1)
+  }
+}
 
 if (k_fold) {
   tic("K-FOLD")
@@ -135,7 +137,7 @@ if (k_fold) {
     testIndexes = which(folds == fold, arr.ind=TRUE)
     test = dataset[testIndexes, ]
     train = dataset[-testIndexes, ]
-    fit = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
+    #fit = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
     predictions = predict(fit, newdata = test, probability = TRUE)
     # correct_count = sum(predictions == dataset[ind == i,]$cuisine)
     # accuracies = append(correct_count / nrow(dataset[ind ==i,]), accuracies)
@@ -144,14 +146,15 @@ if (k_fold) {
     rocPerClass = matrix(nrow = 20, ncol = 1, dimnames = list(levels(dataset$cuisine), c("roc")))
     i = 1
     for (cuisine in levels(dataset$cuisine)) {
-      rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
+      rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine == cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
       i = i + 1
     }
     results[[fold]] = list(confMat=confMat$table,
                            overall=as.data.frame(as.matrix(confMat, what = "overall")), 
                            classes=as.data.frame(as.matrix(confMat, what = "classes")),
                            # Overall roc in i-th fold
-                           roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
+                           # roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
+                           #roc=auc(multcap(test$cuisine, attr(predictions, "probabilities"))),
                            rocPerClass=as.data.frame(rocPerClass)
                       )
     # Print to file
@@ -185,8 +188,9 @@ if (k_fold) {
   results = list(confMat=confMat$table,
                  overall=as.data.frame(as.matrix(confMat, what = "overall")), 
                  classes=as.data.frame(as.matrix(confMat, what = "classes")),
-                 # Overall roc in i-th fold
-                 roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
+                 # Overall roc
+                 # roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
+                 roc=auc(multcap(test$cuisine, attr(predictions, "probabilities"))),
                  rocPerClass=as.data.frame(rocPerClass)
   ) 
   # Print to file
@@ -200,6 +204,25 @@ if (k_fold) {
   print(paste("ROC per class: "))
   print(results$rocPerClass)
 }
+
+overallPerClass = matrix(nrow = 20, ncol = 3, dimnames = list(levels(dataset$cuisine), c("Precision", "Recall", "F1")))
+for (i in 1:20) {
+  for (j in 5:7) {
+    overallPerClass[i, j-4] = mean(unlist(lapply(results, function(x) { as.numeric(x$classes[j, i]) })))
+  }
+}
+
+print("Overall measure per class")
+print(overallPerClass)
+
+print("Avg precision")
+print(mean(overallPerClass[, 1]))
+
+print("Avg recall")
+print(mean(overallPerClass[, 2]))
+
+print("Avg F1")
+print(mean(overallPerClass[, 3]))
 
 ###### Analyzing results
 # TODO: plot svm parameters
