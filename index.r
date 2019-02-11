@@ -10,12 +10,12 @@ source("config.r")
 # Packages manager
 source("packages.r")
 
-using("plyr", "BBmisc", "HandTill2001", "e1071", "stringr", "tm", "caret", "pROC", "mlbench", "tictoc", "jsonlite")
+using("plyr", "BBmisc", "HandTill2001", "e1071", "stringr", "tm", "caret", "pROC", "ROCR", "mlbench", "tictoc", "jsonlite")
 
 set.seed(314)    # Set seed for reproducible results
 
 ###### Redirect output to file
-sink(paste("statistics/", "svm2.txt", sep = ""))
+sink(paste("statistics/", "svm2-10fold.txt", sep = ""))
 
 ###### BUILDING DOCUMENT TERM MATRIX DATASET
 # dataset = read.csv2(dataset_file)
@@ -125,6 +125,8 @@ if (roc) {
 
 if (k_fold) {
   tic("K-FOLD")
+  # Colors for plots
+  colors = rainbow(length(levels(dataset$cuisine)))
   # Randomly shuffle the dataset
   dataset = dataset[sample(nrow(dataset)),]
   #Create num_fold equally size folds
@@ -146,15 +148,25 @@ if (k_fold) {
     rocPerClass = matrix(nrow = 20, ncol = 1, dimnames = list(levels(dataset$cuisine), c("roc")))
     i = 1
     for (cuisine in levels(dataset$cuisine)) {
-      rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine == cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
+      add = TRUE
+      main = ""
+      pred = prediction(attr(predictions, "probabilities")[, cuisine], test$cuisine == cuisine)
+      rocPerClass[i, 1] = as.numeric(performance(pred, "auc")@y.values)
+      # Plot ROC
+      if (i == 1) {
+        add = FALSE
+        main = paste("ROCs in fold ", fold)
+      }
+      plot(performance(pred, "tpr", "fpr"), add = add, col = colors[i], main = main)
+      # rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine == cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
       i = i + 1
     }
+    legend("bottomright", 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1, cex = 0.75, bty = "n")
     results[[fold]] = list(confMat=confMat$table,
                            overall=as.data.frame(as.matrix(confMat, what = "overall")), 
                            classes=as.data.frame(as.matrix(confMat, what = "classes")),
                            # Overall roc in i-th fold
-                           # roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
-                           #roc=auc(multcap(test$cuisine, attr(predictions, "probabilities"))),
+                           roc=multiclass.auc(attr(predictions, "probabilities"), test$cuisine),
                            rocPerClass=as.data.frame(rocPerClass)
                       )
     # Print to file
@@ -182,15 +194,26 @@ if (k_fold) {
   rocPerClass = matrix(nrow = 20, ncol = 1, dimnames = list(levels(dataset$cuisine), c("roc")))
   i = 1
   for (cuisine in levels(dataset$cuisine)) {
-    rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
+    add = TRUE
+    main = ""
+    pred = prediction(attr(predictions, "probabilities")[, cuisine], test$cuisine == cuisine)
+    rocPerClass[i, 1] = as.numeric(performance(pred, "auc")@y.values)
+    # Plot ROC
+    if (i == 1) {
+      add = FALSE
+      main = "ROCs"
+    }
+    plot(performance(pred, "tpr", "fpr"), add = add, col = colors[i], main = main)
+    # rocPerClass[i, 1] = as.numeric(multiclass.roc(test$cuisine == cuisine, attr(predictions, "probabilities")[, cuisine])$auc)
     i = i + 1
   }
+  legend("bottomright", 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1, cex = 0.75, bty = "n")
   results = list(confMat=confMat$table,
                  overall=as.data.frame(as.matrix(confMat, what = "overall")), 
                  classes=as.data.frame(as.matrix(confMat, what = "classes")),
                  # Overall roc
                  # roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
-                 roc=auc(multcap(test$cuisine, attr(predictions, "probabilities"))),
+                 roc=multiclass.auc(attr(predictions, "probabilities"), test$cuisine),
                  rocPerClass=as.data.frame(rocPerClass)
   ) 
   # Print to file
@@ -205,10 +228,19 @@ if (k_fold) {
   print(results$rocPerClass)
 }
 
-overallPerClass = matrix(nrow = 20, ncol = 3, dimnames = list(levels(dataset$cuisine), c("Precision", "Recall", "F1")))
-for (i in 1:20) {
-  for (j in 5:7) {
-    overallPerClass[i, j-4] = mean(unlist(lapply(results, function(x) { as.numeric(x$classes[j, i]) })))
+if (length(results) == 4) {
+  overallPerClass = matrix(nrow = 20, ncol = 3, dimnames = list(levels(dataset$cuisine), c("Precision", "Recall", "F1")))
+  for (i in 1:20) {
+    for (j in 5:7) {
+      overallPerClass[i, j-4] = unlist(as.numeric(results$classes[j, i]) )
+    }
+  }
+} else {
+  overallPerClass = matrix(nrow = 20, ncol = 3, dimnames = list(levels(dataset$cuisine), c("Precision", "Recall", "F1")))
+  for (i in 1:20) {
+    for (j in 5:7) {
+      overallPerClass[i, j-4] = mean(unlist(lapply(results, function(x) { as.numeric(x$classes[j, i]) })))
+    }
   }
 }
 
