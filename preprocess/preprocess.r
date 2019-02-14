@@ -1,16 +1,16 @@
 source("config.r")
 source("packages.r")
 using("jsonlite", "stringr", "tictoc")
-sink(paste("statistics/", filename, sep = ""))
+# sink(paste("statistics/", filename, sep = ""))
 print("STARTING PREPROCESS")
 print("LOADING DATASET")
-preproc_dataset = fromJSON(toString(dataset_file))
+recipes = fromJSON("dataset/recipes-dataset.json")
 # Apply to the ingredients list the tolower function
 # lapply is the same as in LISP
-preproc_dataset$ingredients <- lapply(preproc_dataset$ingredients, function(x) {tolower(x)})
+# recipes$ingredients <- lapply(recipes$ingredients, function(x) {tolower(x)})
 # Perform an union of all the ingredients sublists
 # Reduce is the same as in LISP
-ingredients <- Reduce(union, preproc_dataset$ingredients)
+ingredients <- Reduce(union, recipes$ingredients)
 # ingredients <- sort(tolower(ingredients))
 # Read all the regex placed in regexes.txt file
 regexes <- readLines(file("preprocess/regexes_3.txt"))
@@ -25,9 +25,9 @@ print("CLEANING DATASET")
 # cl <- makePSOCKcluster(4)
 # registerDoParallel(cl) 
 repeat {
-  preproc_dataset$ingredients <- lapply(preproc_dataset$ingredients, function(x) {gsub(toMatch, replacement = "", x)})
-  ingredients <- Reduce(union, preproc_dataset$ingredients);
-  # print(lastLength)
+  recipes$ingredients <- lapply(recipes$ingredients, function(x) {gsub(toMatch, replacement = "", x)})
+  ingredients <- Reduce(union, recipes$ingredients);
+  print(lastLength)
   # print(length(ingredients))
   if(length(ingredients) >= lastLength){
     break
@@ -35,7 +35,7 @@ repeat {
     lastLength = length(ingredients)
   }
 }
-preproc_dataset$ingredients <- lapply(preproc_dataset$ingredients, function(x) {paste(x, collapse = " ")})
+# recipes$ingredients <- lapply(recipes$ingredients, function(x) {paste(x, collapse = " ")})
 # stopCluster(cl)
 print("DONE")
 # write_json(dataset, "dataset/regex-cleaned-dataset.json")

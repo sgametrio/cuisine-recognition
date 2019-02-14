@@ -1,3 +1,39 @@
 \(.*\)
+(low(er)?|all|salted|less|semi|reduced|non|sodium|whole|fat)(-|\s)*?(dry|grain|fat|sodium|soft|sweet|salt|sugar|moisture|purpose|free|reduced)
+oven-ready
+extra(-|\s)*?virgin
+dr(y|ied)
+natural
+store bought
+frozen
+fresh
+artificial
+regular
+smart balance
+small
+salted
+fully cooked
+refrigerated
+refried
+refined
+\s*or\s+
+\s*and\s+
+uncook medium
+uncooked
+unflavored
+unhulled
+unsalted
+unseasoned
+unsmoked
+unsulphured
+unsweetened
+thin
+2 1/2 to 3 lb. 
+8 ounc ziti
+a taste of
 ,(.*)
+with (.*)
+[0-9]+%
+([A-Z]\w*)
+(\w*(®|™)'?\w*)
 ^\s*|\s*$

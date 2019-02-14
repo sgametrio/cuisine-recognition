@@ -4,12 +4,12 @@ using("tm", "stringr")
 
 # Build dataset in tabular form from list of recipes
 fromCleanedRecipes = function (recipes) {
-  corpus = VCorpus(VectorSource(recipes$mapped_ingredients))
+  corpus = VCorpus(VectorSource(recipes$ingredients))
   dataset = fromCorpus(corpus)
   # colnames(dataset)[colnames(dataset) == 'fats'] = 'fatss' # to avoid duplicate name fats
-  dataset = addFeatures(dataset, recipes)
+  # dataset = addFeatures(dataset, recipes)
   dataset = cbind(cuisine = recipes$cuisine, dataset)
-  colnames(dataset) = makeReadable(colnames(dataset))
+  # colnames(dataset) = makeReadable(colnames(dataset))
   dataset
 }
 
@@ -23,9 +23,10 @@ fromRawRecipes = function (recipes) {
 }
 
 fromCorpus = function (corpus) {
-  # corpus = tm_map(corpus, removeWords, stopwords())
-  # corpus = tm_map(corpus, removePunctuation)
-  # corpus = tm_map(corpus, stripWhitespace)
+  corpus = tm_map(corpus, removeWords, stopwords("english"))
+  corpus = tm_map(corpus, removeNumbers)
+  corpus = tm_map(corpus, removePunctuation)
+  corpus = tm_map(corpus, stripWhitespace)
   dtm = DocumentTermMatrix(corpus)
   dataset = as.data.frame(as.matrix(dtm))
 }
@@ -37,7 +38,7 @@ addFeatures = function(dataset, recipes) {
   dataset = cbind(fats = recipes$fats, dataset)
   dataset = cbind(carbs = recipes$carbs, dataset)
   # Scale attributes
-  dataset[, cols] = normalize(dataset[, cols], method = "range")
+  dataset = normalize(dataset, method = "range")
   dataset
 }
 

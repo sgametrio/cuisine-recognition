@@ -19,7 +19,7 @@ sink(paste("statistics/", filename, ep = ""))
 
 ###### BUILDING DOCUMENT TERM MATRIX DATASET
 # dataset = read.csv2(dataset_file)
-recipes = fromJSON("dataset/integrated-dataset.json")
+recipes = fromJSON("dataset/recipes-dataset.json")
 dataset = fromCleanedRecipes(recipes)
 #corpus = VCorpus(VectorSource(recipes$ingredients_ids))
 #corpus = tm_map(corpus, removeWords, stopwords())
@@ -90,15 +90,15 @@ if (roc) {
     n = nrow(dataset)  # Number of observations
     ntrain = round(n*0.75)  # 75% for training set
     tindex = sample(n, ntrain)   # Create a random index
-    train = dataset[tindex,]   # Create training set
-    test = dataset[-tindex,]   # Create test set
+    training = dataset[tindex,]   # Create training set
+    testing = dataset[-tindex,]   # Create testing set
     i = 1
     # Compute N binary SVMs and respective ROCs
     colors = rainbow(length(levels(dataset$cuisine)))
     aucs = matrix(nrow = 20, ncol = 1, dimnames = list(levels(dataset$cuisine), c("roc")))
     for (cuisine in levels(dataset$cuisine)) {
-      binary_test = test
-      binary_train = train
+      binary_test = testing
+      binary_train = training
       levels(binary_test$cuisine)[levels(binary_test$cuisine) != cuisine] = "0"
       levels(binary_test$cuisine)[levels(binary_test$cuisine) == cuisine] = "1"
       levels(binary_train$cuisine)[levels(binary_train$cuisine) != cuisine] = "0"
@@ -121,35 +121,46 @@ if (roc) {
     legend("bottomright", 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1)
 }
 
+# Number of observations
+n = nrow(dataset)  
+# 75% for training set
+ntrain = round(n * 0.75)  
+# Create a random index
+tindex = sample(n, ntrain) 
+# Create training set
+training = dataset[tindex, ] 
+# Create testing set
+testing = dataset[-tindex, ]  
+
 if (k_fold) {
   tic("K-FOLD")
-  # bestFit = NULL
+  bestFit = NULL
   # Colors for plots
   colors = rainbow(length(levels(dataset$cuisine)))
   # Randomly shuffle the dataset
-  dataset  = dataset[sample(nrow(dataset)),]
+  training  = training[sample(nrow(dataset)),]
   #Create num_fold equally size folds
-  folds = cut(seq(1, nrow(dataset)), breaks = num_fold, labels=FALSE)
+  folds = cut(seq(1, nrow(training)), breaks = num_fold, labels=FALSE)
   results = vector(mode = "list", length = num_fold)
   #Perform num_fold cross validation
   for(fold in 1:num_fold){
     print(paste("Fold: ", toString(fold)))
     #Segement data by fold 
-    testIndexes = which(folds == fold, arr.ind=TRUE)
-    test = dataset[testIndexes, ]
-    train = dataset[-testIndexes, ]
-    fit = svm(cuisine ~ ., train, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
-    predictions = predict(fit, test, probability = TRUE)
+    valIndexes = which(folds == fold, arr.ind=TRUE)
+    val = dataset[valIndexes, ]
+    training = dataset[-valIndexes, ]
+    fit = svm(cuisine ~ ., training, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
+    predictions = predict(fit, val, probability = TRUE, type = "probs")
     # correct_count = sum(predictions == dataset[ind == i,]$cuisine)
     # accuracies = append(correct_count / nrow(dataset[ind ==i,]), accuracies)
-    confMat = confusionMatrix(data = predictions, reference = test$cuisine, mode="everything")
+    confMat = confusionMatrix(data = predictions, reference = val$cuisine, mode="everything")
     # Saving statistics to a list (we can iterate through this using lapply)
     rocPerClass = matrix(nrow = 20, ncol = 1, dimnames = list(levels(dataset$cuisine), c("roc")))
     i = 1
     for (cuisine in levels(dataset$cuisine)) {
       add = TRUE
       main = ""
-      pred = prediction(attr(predictions, "probabilities")[, cuisine], test$cuisine == cuisine)
+      pred = prediction(attr(predictions, "probabilities")[, cuisine], val$cuisine == cuisine)
       rocPerClass[i, 1] = as.numeric(performance(pred, "auc")@y.values)
       # Plot ROC
       if (i == 1) {
@@ -159,23 +170,23 @@ if (k_fold) {
       plot(performance(pred, "tpr", "fpr"), add = add, col = colors[i], main = main)
       i = i + 1
     }
-    legend("bottomright", 1, legend = levels(test$cuisine), col = colors, lty=1, lwd=1, cex = 0.75, bty = "n")
+    legend("bottomright", 1, legend = levels(testing$cuisine), col = colors, lty=1, lwd=1, cex = 0.75, bty = "n")
     results[[fold]] = list(confMat=confMat$table,
                            overall=as.data.frame(as.matrix(confMat, what = "overall")), 
                            classes=as.data.frame(as.matrix(confMat, what = "classes")),
                            # Overall roc in i-th fold
-                           roc=as.numeric(multiclass.auc(attr(predictions, "probabilities"), test$cuisine)),
+                           roc=as.numeric(multiclass.auc(attr(predictions, "probabilities"), val$cuisine)),
                            rocPerClass=as.data.frame(rocPerClass)
                       )
     # Choose bet fit 
-    # if (fold == 1) {
-    #   bestFit = fit
-    # } else {
-    #   maxRoc = max(unlist(lapply(results[1:fold-1], function(x) as.numeric(x$roc))))
-    #   if (results[[fold]]$roc > maxRoc) {
-    #     bestFit = fit
-    #   }
-    # }
+    if (fold == 1) {
+      bestFit = fit
+    } else {
+      maxRoc = max(unlist(lapply(results[1:fold-1], function(x) as.numeric(x$roc))))
+      if (results[[fold]]$roc > maxRoc) {
+        bestFit = fit
+      }
+    }
     # Print to file
     print("Confusion matrix")
     print(results[[fold]]$confMat)
@@ -189,26 +200,18 @@ if (k_fold) {
     gc()
   }
 } else {
-  # Number of observations
-  n = nrow(dataset)  
-  # 75% for training set
-  ntrain = round(n * 0.75)  
-  # Create a random index
-  tindex = sample(n, ntrain) 
-  # Create training set
-  train = dataset[tindex, ] 
-  # Create test set
-  test = dataset[-tindex, ]   
-  fit = svm(cuisine ~ ., data = train, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
-  predictions = predict(fit, test, probability = TRUE)
-  confMat = confusionMatrix(data = predictions, reference = test$cuisine, mode="everything")
+  colors = rainbow(length(levels(dataset$cuisine)))
+  fit = svm(cuisine ~ ., training, method = "C-classification", kernel = "linear", probability = TRUE, scale = FALSE)
+  predictions = predict(fit, testing, probability = TRUE)
+  confMat = confusionMatrix(data = predictions, reference = testing$cuisine, mode="everything")
   # Saving statistics to a list (we can iterate through this using lapply)
-  rocPerClass = matrix(nrow = 20, ncol = 1, dimnames = list(levels(dataset$cuisine), c("roc")))
+  rocPerClass = matrix(nrow = 20, ncol = 1, dimnames = list(levels(training$cuisine), c("roc")))
   i = 1
-  for (cuisine in levels(dataset$cuisine)) {
+  for (cuisine in levels(training$cuisine)) {
     add = TRUE
     main = ""
-    pred = prediction(attr(predictions, "probabilities")[, cuisine], test$cuisine == cuisine)
+    # pred = prediction(attr(predictions, "probabilities")[, cuisine], testing$cuisine == cuisine)
+    pred = prediction(predictions[cuisine], testing$cuisine == cuisine)
     rocPerClass[i, 1] = as.numeric(performance(pred, "auc")@y.values)
     # Plot ROC
     if (i == 1) {
@@ -218,13 +221,13 @@ if (k_fold) {
     plot(performance(pred, "tpr", "fpr"), add = add, col = colors[i], main = main)
     i = i + 1
   }
-  legend("bottomright", 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1, cex = 0.75, bty = "n")
+  legend("bottomright", 1, legend = levels(dataset$cuisine), col = colors, lty=1, lwd=1, cex = 0.4, bty = "n")
   results = list(confMat=confMat$table,
                  overall=as.data.frame(as.matrix(confMat, what = "overall")), 
                  classes=as.data.frame(as.matrix(confMat, what = "classes")),
                  # Overall roc
-                 # roc=as.numeric(multiclass.roc(test$cuisine, attr(predictions, "probabilities")[, 2])$auc),
-                 roc=as.numeric(multiclass.auc(attr(predictions, "probabilities"), test$cuisine)),
+                 # roc=as.numeric(multiclass.roc(testing$cuisine, attr(predictions, "probabilities")[, 2])$auc),
+                 roc=as.numeric(multiclass.auc(attr(predictions, "probabilities"), testing$cuisine)),
                  rocPerClass=as.data.frame(rocPerClass)
   ) 
   # Print to file
@@ -246,6 +249,7 @@ if (!k_fold) {
       overallPerClass[i, j-4] = unlist(as.numeric(results$classes[j, i]) )
     }
   }
+  overallPerClass[, 4] = results$rocPerClass[, 1]
   print("Avg accuracy")
   print(results$overall[1,])
   
