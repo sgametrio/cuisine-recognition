@@ -29,7 +29,7 @@ freq = table(recipes$cuisine)
 # 2) At the worst case, since the average length of italian recipes is 10 and it's standard deviation is 4, we suppose
 #    our algorithm takes 10-4=6 ingredients for every new random recipes
 # 3) So to take all the unique italian ingredients at least one time we need at least 2929/6=488.17 recipes
-max_recipes = 489
+max_recipes = 1000
 not_to_add = c()
 new_random_recipes = vector("list", 2)
 names(new_random_recipes) = c("cuisine", "ingredients")
