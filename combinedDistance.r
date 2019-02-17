@@ -1,4 +1,8 @@
 # Compute combined distance
+# Our definition of combined distance is as follows:
+# Given two strings s1 and s2, then
+# combinedDist(s1, s2) = 1 - (|combinedIntersection(s1, s2)| / |combinedUnion(s1, s2)|), where
+# combinedIntersection(s1, s2) = Intersection(s1, s2) U {s | editDistance(s, s1) <= max_dist, }
 require("stringr")
 require("stringdist")
 # strs = c()
@@ -8,19 +12,7 @@ require("stringdist")
 #   str = readline("Inserire una stringa (per terminare inserire la stringa vuota): ")
 # }
 max_dist = as.integer(readline("Inserire la distanza di edit massima secondo cui due stringhe sono uguali: "))
-strs = c("wildflower honey",
-         "honey dijon mustard",
-         "tupelo honey",
-         "orange blossom honey",
-         "raw honey",
-         "clover honey",
-         "honey-flavored greek style yogurt",
-         "clear honey",
-         "country crock honey spread",
-         "honey",
-         "runny honey",
-         "liquid honey",
-         "honey whiskey")
+strs = c("AT&T Corporation", "AT&T", "ATT Corporation", "IBM Corporation")
 # In this simple version we only apply the tolower transformation
 # We might want to remove punctuation, numbers, strange symbols and so on
 strs = tolower(strs)
@@ -33,7 +25,7 @@ rownames(combined_distances) = rownames(jaccard_distances) = rownames(edit_dista
 # We compute a triangular distance matrix
 for (i in seq_len(length(strs)-1)) {
   for (j in (i+1):length(strs)) {
-    # Create a set over the splitted tokens applying an union on them
+    # Create a set over the splitted string tokens, applying an union on them
     tks1 = Reduce(union, unlist(str_split(string = strs[i], pattern = " ")))
     tks2 = Reduce(union, unlist(str_split(string = strs[j], pattern = " ")))
     # Get the real intersection
@@ -54,15 +46,16 @@ for (i in seq_len(length(strs)-1)) {
     # Edit distance
     edit_distances[i, j] = stringdist(strs[i], strs[j], method = "lv")
     # Jaccard distance
-    jaccard_distances[i, j] = stringdist(strs[i], strs[j], method = "jaccard")
-    # Compute combined Jaccard distance
+    # jaccard_distances[i, j] = stringdist(strs[i], strs[j], method = "jaccard")
+    jaccard_distances[i, j] = 1 - (length(intersect(tks1, tks2)) / length(union(tks1, tks2)))
+    # Combined distance
     combined_distances[i, j] = 1 - (length(intersection) / (length(tks1) + length(tks2) - length(intersection)))
   }
 }
 edit_distances = edit_distances / max_str_length
-# View(edit_distances)
-# View(jaccard_distances)
-# View(combined_distances)
+View(edit_distances)
+View(jaccard_distances)
+View(combined_distances)
 # Pick the element with the least average distance from all others elements, for three distance measure used
 selected_elem_edit = selected_elem_jaccard = selected_elem_combined = 0
 min_avg_edit = min_avg_jaccard = min_avg_combined = Inf
